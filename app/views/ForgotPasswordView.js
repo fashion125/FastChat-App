@@ -13,19 +13,22 @@ import styles from './Styles';
 import { showErrorAlert } from '../utils/info';
 import scrollPersistTaps from '../utils/scrollPersistTaps';
 
-@connect(state => ({
-	login: state.login
-}), dispatch => ({
-	forgotPasswordInit: () => dispatch(forgotPasswordInit()),
-	forgotPasswordRequest: email => dispatch(forgotPasswordRequest(email))
-}))
+@connect(
+	state => ({
+		login: state.login
+	}),
+	dispatch => ({
+		forgotPasswordInit: () => dispatch(forgotPasswordInit()),
+		forgotPasswordRequest: email => dispatch(forgotPasswordRequest(email))
+	})
+)
 export default class ForgotPasswordView extends LoggedView {
 	static propTypes = {
 		forgotPasswordInit: PropTypes.func.isRequired,
 		forgotPasswordRequest: PropTypes.func.isRequired,
 		login: PropTypes.object,
 		navigation: PropTypes.object.isRequired
-	}
+	};
 
 	constructor(props) {
 		super('ForgotPasswordView', props);
@@ -47,8 +50,8 @@ export default class ForgotPasswordView extends LoggedView {
 			setTimeout(() => {
 				showErrorAlert(
 					'If this email is registered, ' +
-					'we\'ll send instructions on how to reset your password. ' +
-					'If you do not receive an email shortly, please come back and try again.',
+						'we\'ll send instructions on how to reset your password. ' +
+						'If you do not receive an email shortly, please come back and try again.',
 					'Alert'
 				);
 			});
@@ -63,7 +66,7 @@ export default class ForgotPasswordView extends LoggedView {
 			return;
 		}
 		this.setState({ email, invalidEmail: false });
-	}
+	};
 
 	resetPassword = () => {
 		const { email, invalidEmail } = this.state;
@@ -71,11 +74,11 @@ export default class ForgotPasswordView extends LoggedView {
 			return;
 		}
 		this.props.forgotPasswordRequest(email);
-	}
+	};
 
 	backLogin = () => {
 		this.props.navigation.goBack();
-	}
+	};
 
 	render() {
 		return (
@@ -83,12 +86,17 @@ export default class ForgotPasswordView extends LoggedView {
 				contentContainerStyle={styles.container}
 				keyboardVerticalOffset={128}
 			>
-				<ScrollView {...scrollPersistTaps} contentContainerStyle={styles.containerScrollView}>
+				<ScrollView
+					{...scrollPersistTaps}
+					contentContainerStyle={styles.containerScrollView}
+				>
 					<SafeAreaView>
 						<View style={styles.loginView}>
 							<View style={styles.formContainer}>
 								<TextInput
-									inputStyle={this.state.invalidEmail ? { borderColor: 'red' } : {}}
+									inputStyle={
+										this.state.invalidEmail ? { borderColor: 'red' } : {}
+									}
 									label='Email'
 									placeholder='Email'
 									keyboardType='email-address'
@@ -105,7 +113,11 @@ export default class ForgotPasswordView extends LoggedView {
 									/>
 								</View>
 
-								{this.props.login.failure && <Text style={styles.error}>{this.props.login.error.reason}</Text>}
+								{this.props.login.failure && (
+									<Text style={styles.error}>
+										{this.props.login.error.reason}
+									</Text>
+								)}
 							</View>
 							<Loading visible={this.props.login.isFetching} />
 						</View>

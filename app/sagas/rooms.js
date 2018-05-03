@@ -1,5 +1,15 @@
 import { Alert } from 'react-native';
-import { put, call, takeLatest, take, select, race, fork, cancel, takeEvery } from 'redux-saga/effects';
+import {
+	put,
+	call,
+	takeLatest,
+	take,
+	select,
+	race,
+	fork,
+	cancel,
+	takeEvery
+} from 'redux-saga/effects';
 import { delay } from 'redux-saga';
 import { BACKGROUND } from 'redux-enhancer-react-native-appstate';
 import * as types from '../actions/actionsTypes';
@@ -42,7 +52,9 @@ const usersTyping = function* usersTyping({ rid }) {
 	while (true) {
 		const { _rid, username, typing } = yield take(types.ROOM.SOMEONE_TYPING);
 		if (_rid === rid) {
-			yield (typing ? put(addUserTyping(username)) : put(removeUserTyping(username)));
+			yield typing
+				? put(addUserTyping(username))
+				: put(removeUserTyping(username));
 			if (typing) {
 				yield fork(cancelTyping, username);
 			}
@@ -129,7 +141,9 @@ const goRoomsListAndDelete = function* goRoomsListAndDelete(rid) {
 	database.write(() => {
 		const messages = database.objects('messages').filtered('rid = $0', rid);
 		database.delete(messages);
-		const subscription = database.objects('subscriptions').filtered('rid = $0', rid);
+		const subscription = database
+			.objects('subscriptions')
+			.filtered('rid = $0', rid);
 		database.delete(subscription);
 	});
 };

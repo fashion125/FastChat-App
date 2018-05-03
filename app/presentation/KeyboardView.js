@@ -14,7 +14,7 @@ export default class KeyboardView extends React.PureComponent {
 			PropTypes.arrayOf(PropTypes.node),
 			PropTypes.node
 		])
-	}
+	};
 
 	render() {
 		return (

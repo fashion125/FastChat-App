@@ -2,7 +2,17 @@ import ActionButton from 'react-native-action-button';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { View, StyleSheet, TextInput, Text, TouchableOpacity, SafeAreaView, FlatList, LayoutAnimation, Platform } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	TextInput,
+	Text,
+	TouchableOpacity,
+	SafeAreaView,
+	FlatList,
+	LayoutAnimation,
+	Platform
+} from 'react-native';
 import { connect } from 'react-redux';
 import { addUser, removeUser, reset } from '../actions/selectedUsers';
 import database from '../lib/realm';
@@ -90,8 +100,8 @@ export default class SelectedUsersView extends LoggedView {
 		const params = navigation.state.params || {};
 
 		return {
-			headerRight: (
-				params.showCreateiOS && Platform.OS === 'ios' ?
+			headerRight:
+				params.showCreateiOS && Platform.OS === 'ios' ? (
 					<TouchableOpacity
 						style={{
 							backgroundColor: 'transparent',
@@ -110,14 +120,17 @@ export default class SelectedUsersView extends LoggedView {
 							size={24}
 							backgroundColor='transparent'
 						/>
-					</TouchableOpacity> : null
-			)
+					</TouchableOpacity>
+				) : null
 		};
 	};
 
 	constructor(props) {
 		super('SelectedUsersView', props);
-		this.data = database.objects('subscriptions').filtered('t = $0', 'd').sorted('roomUpdatedAt', true);
+		this.data = database
+			.objects('subscriptions')
+			.filtered('t = $0', 'd')
+			.sorted('roomUpdatedAt', true);
 		this.state = {
 			search: []
 		};
@@ -155,7 +168,9 @@ export default class SelectedUsersView extends LoggedView {
 			});
 		}
 
-		let data = this.data.filtered('name CONTAINS[c] $0 AND t = $1', searchText, 'd').slice(0, 7);
+		let data = this.data
+			.filtered('name CONTAINS[c] $0 AND t = $1', searchText, 'd')
+			.slice(0, 7);
 
 		const usernames = data.map(sub => sub.map);
 		try {
@@ -165,8 +180,11 @@ export default class SelectedUsersView extends LoggedView {
 				}
 
 				const { users } = await Promise.race([
-					RocketChat.spotlight(searchText, usernames, { users: true, rooms: false }),
-					new Promise((resolve, reject) => this.oldPromise = reject)
+					RocketChat.spotlight(searchText, usernames, {
+						users: true,
+						rooms: false
+					}),
+					new Promise((resolve, reject) => (this.oldPromise = reject))
 				]);
 
 				data = users.map(user => ({
@@ -293,7 +311,9 @@ export default class SelectedUsersView extends LoggedView {
 			<ActionButton
 				buttonColor='rgba(67, 165, 71, 1)'
 				onPress={() => this.nextAction()}
-				renderIcon={() => <Icon name='md-arrow-forward' style={styles.actionButtonIcon} />}
+				renderIcon={() => (
+					<Icon name='md-arrow-forward' style={styles.actionButtonIcon} />
+				)}
 			/>
 		);
 	};

@@ -1,6 +1,5 @@
 import * as types from './actionsTypes';
 
-
 export function roomsRequest() {
 	return {
 		type: types.ROOMS.REQUEST

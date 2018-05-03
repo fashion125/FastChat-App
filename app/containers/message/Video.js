@@ -7,7 +7,11 @@ import { connect } from 'react-redux';
 import Markdown from './Markdown';
 import openLink from '../../utils/openLink';
 
-const SUPPORTED_TYPES = ['video/quicktime', 'video/mp4', ...(Platform.OS === 'ios' ? [] : ['video/webm', 'video/3gp', 'video/mkv'])];
+const SUPPORTED_TYPES = [
+	'video/quicktime',
+	'video/mp4',
+	...(Platform.OS === 'ios' ? [] : ['video/webm', 'video/3gp', 'video/mkv'])
+];
 const isTypeSupported = type => SUPPORTED_TYPES.indexOf(type) !== -1;
 
 const styles = StyleSheet.create({
@@ -36,7 +40,7 @@ export default class Video extends React.PureComponent {
 		file: PropTypes.object.isRequired,
 		baseUrl: PropTypes.string.isRequired,
 		user: PropTypes.object.isRequired
-	}
+	};
 
 	state = { isVisible: false };
 
@@ -57,34 +61,34 @@ export default class Video extends React.PureComponent {
 		const { isVisible } = this.state;
 		const { video_url, description } = this.props.file;
 		const { baseUrl, user } = this.props;
-		const uri = `${ baseUrl }${ video_url }?rc_uid=${ user.id }&rc_token=${ user.token }`;
-		return (
-			[
-				<TouchableOpacity
-					key='button'
-					style={styles.container}
-					onPress={() => this.open()}
-				>
-					<Image
-						source={require('../../static/images/logo.png')}
-						style={styles.image}
-					/>
-					<Markdown msg={description} />
-				</TouchableOpacity>,
-				<Modal
-					key='modal'
-					isVisible={isVisible}
-					style={styles.modal}
-					supportedOrientations={['portrait', 'landscape']}
-					onBackButtonPress={() => this.toggleModal()}
-				>
-					<VideoPlayer
-						source={{ uri }}
-						onBack={() => this.toggleModal()}
-						disableVolume
-					/>
-				</Modal>
-			]
-		);
+		const uri = `${ baseUrl }${ video_url }?rc_uid=${ user.id }&rc_token=${
+			user.token
+		}`;
+		return [
+			<TouchableOpacity
+				key='button'
+				style={styles.container}
+				onPress={() => this.open()}
+			>
+				<Image
+					source={require('../../static/images/logo.png')}
+					style={styles.image}
+				/>
+				<Markdown msg={description} />
+			</TouchableOpacity>,
+			<Modal
+				key='modal'
+				isVisible={isVisible}
+				style={styles.modal}
+				supportedOrientations={['portrait', 'landscape']}
+				onBackButtonPress={() => this.toggleModal()}
+			>
+				<VideoPlayer
+					source={{ uri }}
+					onBack={() => this.toggleModal()}
+					disableVolume
+				/>
+			</Modal>
+		];
 	}
 }

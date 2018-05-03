@@ -9,7 +9,11 @@ import LoggedView from '../View';
 import { List } from './ListView';
 import * as actions from '../../actions';
 import { openRoom, setLastOpen } from '../../actions/room';
-import { editCancel, toggleReactionPicker, actionsShow } from '../../actions/messages';
+import {
+	editCancel,
+	toggleReactionPicker,
+	actionsShow
+} from '../../actions/messages';
 import database from '../../lib/realm';
 import RocketChat from '../../lib/rocketchat';
 import Message from '../../containers/message';
@@ -23,7 +27,8 @@ import styles from './styles';
 
 @connect(
 	state => ({
-		Site_Url: state.settings.Site_Url || state.server ? state.server.server : '',
+		Site_Url:
+			state.settings.Site_Url || state.server ? state.server.server : '',
 		Message_TimeFormat: state.settings.Message_TimeFormat,
 		loading: state.messages.isFetching,
 		user: state.login.user,
@@ -62,13 +67,14 @@ export default class RoomView extends LoggedView {
 
 	constructor(props) {
 		super('RoomView', props);
-		this.rid =
-			props.rid ||
-			props.navigation.state.params.room.rid;
-		this.name = props.name ||
+		this.rid = props.rid || props.navigation.state.params.room.rid;
+		this.name =
+			props.name ||
 			props.navigation.state.params.name ||
 			props.navigation.state.params.room.name;
-		this.rooms = database.objects('subscriptions').filtered('rid = $0', this.rid);
+		this.rooms = database
+			.objects('subscriptions')
+			.filtered('rid = $0', this.rid);
 		this.state = {
 			loaded: true,
 			joined: typeof props.rid === 'undefined',
@@ -84,7 +90,11 @@ export default class RoomView extends LoggedView {
 		await this.props.openRoom({
 			...this.state.room
 		});
-		if (this.state.room.alert || this.state.room.unread || this.state.room.userMentions) {
+		if (
+			this.state.room.alert ||
+			this.state.room.unread ||
+			this.state.room.userMentions
+		) {
 			this.props.setLastOpen(this.state.room.ls);
 		} else {
 			this.props.setLastOpen(null);
@@ -93,7 +103,11 @@ export default class RoomView extends LoggedView {
 		this.rooms.addListener(this.updateRoom);
 	}
 	shouldComponentUpdate(nextProps, nextState) {
-		return !(equal(this.props, nextProps) && equal(this.state, nextState) && this.state.room.ro === nextState.room.ro);
+		return !(
+			equal(this.props, nextProps) &&
+			equal(this.state, nextState) &&
+			this.state.room.ro === nextState.room.ro
+		);
 	}
 	componentWillUnmount() {
 		this.rooms.removeAllListeners();
@@ -111,15 +125,20 @@ export default class RoomView extends LoggedView {
 				return;
 			}
 			// TODO: fix
-			RocketChat.loadMessagesForRoom({ rid: this.rid, t: this.state.room.t, latest: lastRowData.ts }, ({ end }) => end && this.setState({
-				end
-			}));
+			RocketChat.loadMessagesForRoom(
+				{ rid: this.rid, t: this.state.room.t, latest: lastRowData.ts },
+				({ end }) =>
+					end &&
+					this.setState({
+						end
+					})
+			);
 		});
-	}
+	};
 
 	onMessageLongPress = (message) => {
 		this.props.actionsShow(message);
-	}
+	};
 
 	onReactionPress = (shortname, messageId) => {
 		if (!messageId) {
@@ -131,7 +150,7 @@ export default class RoomView extends LoggedView {
 
 	updateRoom = () => {
 		this.setState({ room: JSON.parse(JSON.stringify(this.rooms[0])) });
-	}
+	};
 
 	sendMessage = (message) => {
 		RocketChat.sendMessage(this.rid, message).then(() => {
@@ -187,7 +206,7 @@ export default class RoomView extends LoggedView {
 			return <Text style={styles.loadingMore}>Start of conversation</Text>;
 		}
 		return <Text style={styles.loadingMore}>Loading more messages...</Text>;
-	}
+	};
 	render() {
 		return (
 			<View style={styles.container}>

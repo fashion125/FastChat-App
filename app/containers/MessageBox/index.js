@@ -1,6 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, TextInput, FlatList, Text, TouchableOpacity } from 'react-native';
+import {
+	View,
+	TextInput,
+	FlatList,
+	Text,
+	TouchableOpacity
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
@@ -19,7 +25,6 @@ import { emojis } from '../../emojis';
 import Recording from './Recording';
 import './EmojiKeyboard';
 
-
 const MENTIONS_TRACKING_TYPE_USERS = '@';
 const MENTIONS_TRACKING_TYPE_EMOJIS = ':';
 
@@ -27,18 +32,21 @@ const onlyUnique = function onlyUnique(value, index, self) {
 	return self.indexOf(({ _id }) => value._id === _id) === index;
 };
 
-@connect(state => ({
-	room: state.room,
-	message: state.messages.message,
-	editing: state.messages.editing,
-	baseUrl: state.settings.Site_Url || state.server ? state.server.server : ''
-}), dispatch => ({
-	editCancel: () => dispatch(editCancel()),
-	editRequest: message => dispatch(editRequest(message)),
-	typing: status => dispatch(userTyping(status)),
-	clearInput: () => dispatch(clearInput()),
-	layoutAnimation: () => dispatch(layoutAnimation())
-}))
+@connect(
+	state => ({
+		room: state.room,
+		message: state.messages.message,
+		editing: state.messages.editing,
+		baseUrl: state.settings.Site_Url || state.server ? state.server.server : ''
+	}),
+	dispatch => ({
+		editCancel: () => dispatch(editCancel()),
+		editRequest: message => dispatch(editRequest(message)),
+		typing: status => dispatch(userTyping(status)),
+		clearInput: () => dispatch(clearInput()),
+		layoutAnimation: () => dispatch(layoutAnimation())
+	})
+)
 export default class MessageBox extends React.PureComponent {
 	static propTypes = {
 		onSubmit: PropTypes.func.isRequired,
@@ -51,7 +59,7 @@ export default class MessageBox extends React.PureComponent {
 		typing: PropTypes.func,
 		clearInput: PropTypes.func,
 		layoutAnimation: PropTypes.func
-	}
+	};
 
 	constructor(props) {
 		super(props);
@@ -108,27 +116,33 @@ export default class MessageBox extends React.PureComponent {
 	get leftButtons() {
 		const { editing } = this.props;
 		if (editing) {
-			return (<Icon
-				style={styles.actionButtons}
-				name='close'
-				accessibilityLabel='Cancel editing'
-				accessibilityTraits='button'
-				onPress={() => this.editCancel()}
-			/>);
+			return (
+				<Icon
+					style={styles.actionButtons}
+					name='close'
+					accessibilityLabel='Cancel editing'
+					accessibilityTraits='button'
+					onPress={() => this.editCancel()}
+				/>
+			);
 		}
-		return !this.state.showEmojiKeyboard ? (<Icon
-			style={styles.actionButtons}
-			onPress={() => this.openEmoji()}
-			accessibilityLabel='Open emoji selector'
-			accessibilityTraits='button'
-			name='mood'
-		/>) : (<Icon
-			onPress={() => this.closeEmoji()}
-			style={styles.actionButtons}
-			accessibilityLabel='Close emoji selector'
-			accessibilityTraits='button'
-			name='keyboard'
-		/>);
+		return !this.state.showEmojiKeyboard ? (
+			<Icon
+				style={styles.actionButtons}
+				onPress={() => this.openEmoji()}
+				accessibilityLabel='Open emoji selector'
+				accessibilityTraits='button'
+				name='mood'
+			/>
+		) : (
+			<Icon
+				onPress={() => this.closeEmoji()}
+				style={styles.actionButtons}
+				accessibilityLabel='Close emoji selector'
+				accessibilityTraits='button'
+				name='keyboard'
+			/>
+		);
 	}
 	get rightButtons() {
 		const icons = [];
@@ -145,7 +159,10 @@ export default class MessageBox extends React.PureComponent {
 			return icons;
 		}
 		icons.push(<Icon
-			style={[styles.actionButtons, { color: '#1D74F5', paddingHorizontal: 10 }]}
+			style={[
+				styles.actionButtons,
+				{ color: '#1D74F5', paddingHorizontal: 10 }
+			]}
 			name='mic'
 			key='micIcon'
 			accessibilityLabel='Send audio message'
@@ -168,9 +185,12 @@ export default class MessageBox extends React.PureComponent {
 			maxHeight: 1960,
 			maxWidth: 1960,
 			quality: 0.8,
-			customButtons: [{
-				name: 'import', title: 'Import File From'
-			}]
+			customButtons: [
+				{
+					name: 'import',
+					title: 'Import File From'
+				}
+			]
 		};
 		ImagePicker.showImagePicker(options, (response) => {
 			if (response.didCancel) {
@@ -190,7 +210,7 @@ export default class MessageBox extends React.PureComponent {
 				RocketChat.sendFileMessage(this.props.rid, fileInfo, response.data);
 			}
 		});
-	}
+	};
 	editCancel() {
 		this.props.editCancel();
 		this.setState({ text: '' });
@@ -213,7 +233,7 @@ export default class MessageBox extends React.PureComponent {
 		this.setState({
 			recording: false
 		});
-	}
+	};
 
 	closeEmoji() {
 		this.setState({ showEmojiKeyboard: false });
@@ -244,7 +264,10 @@ export default class MessageBox extends React.PureComponent {
 			this.users = [{ _id: -1, username: 'all', desc: 'all' }, ...this.users];
 		}
 		if ('here'.indexOf(keyword) !== -1) {
-			this.users = [{ _id: -2, username: 'here', desc: 'active users' }, ...this.users];
+			this.users = [
+				{ _id: -2, username: 'here', desc: 'active users' },
+				...this.users
+			];
 		}
 	}
 
@@ -281,7 +304,10 @@ export default class MessageBox extends React.PureComponent {
 			console.warn('spotlight canceled');
 		} finally {
 			delete this.oldPromise;
-			this.users = database.objects('users').filtered('username CONTAINS[c] $0', keyword).slice();
+			this.users = database
+				.objects('users')
+				.filtered('username CONTAINS[c] $0', keyword)
+				.slice();
 			this._getFixedMentions(keyword);
 			this.setState({ mentions: this.users });
 		}
@@ -289,8 +315,7 @@ export default class MessageBox extends React.PureComponent {
 
 	async _getRooms(keyword = '') {
 		this.roomsCache = this.roomsCache || [];
-		this.rooms = database.objects('subscriptions')
-			.filtered('t != $0', 'd');
+		this.rooms = database.objects('subscriptions').filtered('t != $0', 'd');
 		if (keyword) {
 			this.rooms = this.rooms.filtered('name CONTAINS[c] $0', keyword);
 		}
@@ -299,7 +324,10 @@ export default class MessageBox extends React.PureComponent {
 		this.rooms.forEach(room => rooms.push(room));
 
 		this.roomsCache.forEach((room) => {
-			if (room.name && room.name.toUpperCase().indexOf(keyword.toUpperCase()) !== -1) {
+			if (
+				room.name &&
+				room.name.toUpperCase().indexOf(keyword.toUpperCase()) !== -1
+			) {
 				rooms.push(room);
 			}
 		});
@@ -315,7 +343,11 @@ export default class MessageBox extends React.PureComponent {
 
 		try {
 			const results = await Promise.race([
-				RocketChat.spotlight(keyword, [...rooms, ...this.roomsCache].map(r => r.name), { rooms: true }),
+				RocketChat.spotlight(
+					keyword,
+					[...rooms, ...this.roomsCache].map(r => r.name),
+					{ rooms: true }
+				),
 				new Promise((resolve, reject) => (this.oldPromise = reject))
 			]);
 			this.roomsCache = [...this.roomsCache, ...results.rooms].filter(onlyUnique);
@@ -329,8 +361,13 @@ export default class MessageBox extends React.PureComponent {
 
 	_getEmojis(keyword) {
 		if (keyword) {
-			this.customEmojis = database.objects('customEmojis').filtered('name CONTAINS[c] $0', keyword).slice(0, 4);
-			this.emojis = emojis.filter(emoji => emoji.indexOf(keyword) !== -1).slice(0, 4);
+			this.customEmojis = database
+				.objects('customEmojis')
+				.filtered('name CONTAINS[c] $0', keyword)
+				.slice(0, 4);
+			this.emojis = emojis
+				.filter(emoji => emoji.indexOf(keyword) !== -1)
+				.slice(0, 4);
 			const mergedEmojis = [...this.customEmojis, ...this.emojis];
 			this.setState({ mentions: mergedEmojis });
 		}
@@ -368,7 +405,7 @@ export default class MessageBox extends React.PureComponent {
 		} else {
 			this._getRooms(keyword);
 		}
-	}
+	};
 
 	_onPressMention(item) {
 		const msg = this.component._lastNativeText;
@@ -380,8 +417,10 @@ export default class MessageBox extends React.PureComponent {
 		const regexp = /([a-z0-9._-]+)$/im;
 
 		const result = msg.substr(0, cursor).replace(regexp, '');
-		const mentionName = this.state.trackingType === MENTIONS_TRACKING_TYPE_EMOJIS ?
-			`${ item.name || item }:` : (item.username || item.name);
+		const mentionName =
+			this.state.trackingType === MENTIONS_TRACKING_TYPE_EMOJIS
+				? `${ item.name || item }:`
+				: item.username || item.name;
 		const text = `${ result }${ mentionName } ${ msg.slice(cursor) }`;
 		this.component.setNativeProps({ text });
 		this.setState({ text });
@@ -413,7 +452,7 @@ export default class MessageBox extends React.PureComponent {
 			<Text style={styles.fixedMentionAvatar}>{item.username}</Text>
 			<Text>Notify {item.desc} in this room</Text>
 		</TouchableOpacity>
-	)
+	);
 	renderMentionEmoji = (item) => {
 		if (item.name) {
 			return (
@@ -426,14 +465,11 @@ export default class MessageBox extends React.PureComponent {
 			);
 		}
 		return (
-			<Text
-				key='mention-item-avatar'
-				style={styles.mentionItemEmoji}
-			>
+			<Text key='mention-item-avatar' style={styles.mentionItemEmoji}>
 				{emojify(`:${ item }:`, { output: 'unicode' })}
 			</Text>
 		);
-	}
+	};
 	renderMentionItem = (item) => {
 		if (item.username === 'all' || item.username === 'here') {
 			return this.renderFixedMentionItem(item);
@@ -443,11 +479,11 @@ export default class MessageBox extends React.PureComponent {
 				style={styles.mentionItem}
 				onPress={() => this._onPressMention(item)}
 			>
-				{this.state.trackingType === MENTIONS_TRACKING_TYPE_EMOJIS ?
-					[
+				{this.state.trackingType === MENTIONS_TRACKING_TYPE_EMOJIS
+					? [
 						this.renderMentionEmoji(item),
-						<Text key='mention-item-name'>:{ item.name || item }:</Text>
-					]
+						<Text key='mention-item-name'>:{item.name || item}:</Text>
+					  ]
 					: [
 						<Avatar
 							key='mention-item-avatar'
@@ -455,12 +491,11 @@ export default class MessageBox extends React.PureComponent {
 							text={item.username || item.name}
 							size={30}
 						/>,
-						<Text key='mention-item-name'>{ item.username || item.name }</Text>
-					]
-				}
+						<Text key='mention-item-name'>{item.username || item.name}</Text>
+					  ]}
 			</TouchableOpacity>
 		);
-	}
+	};
 	renderMentions = () => (
 		<FlatList
 			key='messagebox-container'
@@ -474,31 +509,32 @@ export default class MessageBox extends React.PureComponent {
 
 	renderContent() {
 		if (this.state.recording) {
-			return (<Recording onFinish={this.finishAudioMessage} />);
+			return <Recording onFinish={this.finishAudioMessage} />;
 		}
-		return (
-			[
-				this.renderMentions(),
-				<View key='messagebox' style={[styles.textArea, this.props.editing && styles.editing]}>
-					{this.leftButtons}
-					<TextInput
-						ref={component => this.component = component}
-						style={styles.textBoxInput}
-						returnKeyType='default'
-						keyboardType='twitter'
-						blurOnSubmit={false}
-						placeholder='New Message'
-						onChangeText={text => this.onChangeText(text)}
-						value={this.state.text}
-						underlineColorAndroid='transparent'
-						defaultValue=''
-						multiline
-						placeholderTextColor='#9EA2A8'
-					/>
-					{this.rightButtons}
-				</View>
-			]
-		);
+		return [
+			this.renderMentions(),
+			<View
+				key='messagebox'
+				style={[styles.textArea, this.props.editing && styles.editing]}
+			>
+				{this.leftButtons}
+				<TextInput
+					ref={component => (this.component = component)}
+					style={styles.textBoxInput}
+					returnKeyType='default'
+					keyboardType='twitter'
+					blurOnSubmit={false}
+					placeholder='New Message'
+					onChangeText={text => this.onChangeText(text)}
+					value={this.state.text}
+					underlineColorAndroid='transparent'
+					defaultValue=''
+					multiline
+					placeholderTextColor='#9EA2A8'
+				/>
+				{this.rightButtons}
+			</View>
+		];
 	}
 
 	render() {

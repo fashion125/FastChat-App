@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
 @connect(state => ({
 	activeUsers: state.activeUsers
 }))
-
 export default class Status extends React.Component {
 	static propTypes = {
 		style: ViewPropTypes.style,
@@ -25,15 +24,31 @@ export default class Status extends React.Component {
 
 	shouldComponentUpdate(nextProps) {
 		const userId = this.props.id;
-		return (nextProps.activeUsers[userId] && nextProps.activeUsers[userId].status) !== this.status;
+		return (
+			(nextProps.activeUsers[userId] &&
+				nextProps.activeUsers[userId].status) !== this.status
+		);
 	}
 
 	get status() {
 		const userId = this.props.id;
-		return (this.props.activeUsers && this.props.activeUsers[userId] && this.props.activeUsers[userId].status) || 'offline';
+		return (
+			(this.props.activeUsers &&
+				this.props.activeUsers[userId] &&
+				this.props.activeUsers[userId].status) ||
+			'offline'
+		);
 	}
 
 	render() {
-		return (<View style={[styles.status, this.props.style, { backgroundColor: STATUS_COLORS[this.status] }]} />);
+		return (
+			<View
+				style={[
+					styles.status,
+					this.props.style,
+					{ backgroundColor: STATUS_COLORS[this.status] }
+				]}
+			/>
+		);
 	}
 }

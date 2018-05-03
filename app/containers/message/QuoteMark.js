@@ -11,7 +11,9 @@ const styles = StyleSheet.create({
 	}
 });
 
-const QuoteMark = ({ color }) => <View style={[styles.quoteSign, { borderColor: color || '#a0a0a0' }]} />;
+const QuoteMark = ({ color }) => (
+	<View style={[styles.quoteSign, { borderColor: color || '#a0a0a0' }]} />
+);
 
 QuoteMark.propTypes = {
 	color: PropTypes.string

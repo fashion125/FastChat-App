@@ -1,6 +1,5 @@
 import toQuery from './toQuery';
 
-
 const handleSuccess = (msg) => {
 	if (msg.success !== undefined && !msg.success) {
 		return Promise.reject(msg);
@@ -8,9 +7,7 @@ const handleSuccess = (msg) => {
 	return msg;
 };
 
-export const get = function({
-	token, id, server
-}, method, params = {}) {
+export const get = function({ token, id, server }, method, params = {}) {
 	return fetch(`${ server }/api/v1/${ method }/?${ toQuery(params) }`, {
 		method: 'get',
 		headers: {
@@ -19,13 +16,12 @@ export const get = function({
 			'X-Auth-Token': token,
 			'X-User-Id': id
 		}
-	}).then(response => response.json()).then(handleSuccess);
+	})
+		.then(response => response.json())
+		.then(handleSuccess);
 };
 
-
-export const post = function({
-	token, id, server
-}, method, params = {}) {
+export const post = function({ token, id, server }, method, params = {}) {
 	return fetch(`${ server }/api/v1/${ method }`, {
 		method: 'post',
 		body: JSON.stringify(params),
@@ -36,5 +32,7 @@ export const post = function({
 			'X-Auth-Token': token,
 			'X-User-Id': id
 		}
-	}).then(response => response.json()).then(handleSuccess);
+	})
+		.then(response => response.json())
+		.then(handleSuccess);
 };

@@ -49,14 +49,14 @@ export default class Button extends React.PureComponent {
 		type: PropTypes.string,
 		onPress: PropTypes.func,
 		disabled: PropTypes.bool
-	}
+	};
 
 	static defaultProps = {
 		title: 'Press me!',
 		type: 'primary',
 		onPress: () => alert('It works!'),
 		disabled: false
-	}
+	};
 
 	render() {
 		const {
@@ -77,7 +77,9 @@ export default class Button extends React.PureComponent {
 						disabled && styles.disabled
 					]}
 				>
-					<Text style={[styles.text, styles[`text_color_${ type }`]]}>{title}</Text>
+					<Text style={[styles.text, styles[`text_color_${ type }`]]}>
+						{title}
+					</Text>
 				</View>
 			</Touch>
 		);

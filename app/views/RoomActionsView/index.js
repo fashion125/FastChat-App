@@ -19,21 +19,23 @@ import { setLoading } from '../../actions/selectedUsers';
 const renderSeparator = () => <View style={styles.separator} />;
 const getRoomTitle = room => (room.t === 'd' ? room.fname : room.name);
 
-@connect(state => ({
-	user_id: state.login.user.id,
-	user_username: state.login.user.username
-}), dispatch => ({
-	leaveRoom: rid => dispatch(leaveRoom(rid)),
-	setLoadingInvite: loading => dispatch(setLoading(loading))
-}))
-
+@connect(
+	state => ({
+		user_id: state.login.user.id,
+		user_username: state.login.user.username
+	}),
+	dispatch => ({
+		leaveRoom: rid => dispatch(leaveRoom(rid)),
+		setLoadingInvite: loading => dispatch(setLoading(loading))
+	})
+)
 export default class RoomActionsView extends LoggedView {
 	static propTypes = {
 		baseUrl: PropTypes.string,
 		user: PropTypes.object,
 		navigation: PropTypes.object,
 		leaveRoom: PropTypes.func
-	}
+	};
 
 	constructor(props) {
 		super('RoomActionsView', props);
@@ -50,7 +52,10 @@ export default class RoomActionsView extends LoggedView {
 
 	async componentDidMount() {
 		this.rooms.addListener(this.updateRoom);
-		const [members, member] = await Promise.all([this.updateRoomMembers(), this.updateRoomMember()]);
+		const [members, member] = await Promise.all([
+			this.updateRoomMembers(),
+			this.updateRoomMember()
+		]);
 		this.setState({ ...members, ...member });
 	}
 
@@ -60,12 +65,16 @@ export default class RoomActionsView extends LoggedView {
 
 	onPressTouchable = (item) => {
 		if (item.route) {
-			return this.props.navigation.navigate({ key: item.route, routeName: item.route, params: item.params });
+			return this.props.navigation.navigate({
+				key: item.route,
+				routeName: item.route,
+				params: item.params
+			});
 		}
 		if (item.event) {
 			return item.event();
 		}
-	}
+	};
 
 	updateRoomMembers = async() => {
 		const { t } = this.state.room;
@@ -73,9 +82,18 @@ export default class RoomActionsView extends LoggedView {
 			let onlineMembers = [];
 			let allMembers = [];
 			try {
-				const onlineMembersCall = RocketChat.getRoomMembers(this.state.room.rid, false);
-				const allMembersCall = RocketChat.getRoomMembers(this.state.room.rid, true);
-				const [onlineMembersResult, allMembersResult] = await Promise.all([onlineMembersCall, allMembersCall]);
+				const onlineMembersCall = RocketChat.getRoomMembers(
+					this.state.room.rid,
+					false
+				);
+				const allMembersCall = RocketChat.getRoomMembers(
+					this.state.room.rid,
+					true
+				);
+				const [onlineMembersResult, allMembersResult] = await Promise.all([
+					onlineMembersCall,
+					allMembersCall
+				]);
 				onlineMembers = onlineMembersResult.records;
 				allMembers = allMembersResult.records;
 				return { onlineMembers, allMembers };
@@ -83,32 +101,41 @@ export default class RoomActionsView extends LoggedView {
 				return {};
 			}
 		}
-	}
+	};
 
 	updateRoomMember = async() => {
 		if (this.state.room.t === 'd') {
 			return {};
 		}
 		try {
-			const member = await RocketChat.getRoomMember(this.state.room.rid, this.props.user_id);
+			const member = await RocketChat.getRoomMember(
+				this.state.room.rid,
+				this.props.user_id
+			);
 			return { member };
 		} catch (error) {
 			console.warn('RoomActions updateRoomMember', error);
 			return {};
 		}
-	}
+	};
 
 	updateRoom = () => {
 		this.setState({ room: this.room });
-	}
-	get canAddUser() { // Invite user
-		const {
-			rid, t
-		} = this.room;
+	};
+	get canAddUser() {
+		// Invite user
+		const { rid, t } = this.room;
 		const { allMembers } = this.state;
 		// TODO: same test joined
 		const userInRoom = !!allMembers.find(m => m.username === this.props.user_username);
-		const permissions = RocketChat.hasPermission(['add-user-to-joined-room', 'add-user-to-any-c-room', 'add-user-to-any-p-room'], rid);
+		const permissions = RocketChat.hasPermission(
+			[
+				'add-user-to-joined-room',
+				'add-user-to-any-c-room',
+				'add-user-to-any-p-room'
+			],
+			rid
+		);
 
 		if (userInRoom && permissions['add-user-to-joined-room']) {
 			return true;
@@ -127,67 +154,73 @@ export default class RoomActionsView extends LoggedView {
 		} = this.room;
 		const { onlineMembers } = this.state;
 
-		const sections = [{
-			data: [{
-				icon: 'ios-star',
-				name: 'USER',
-				route: 'RoomInfo',
-				params: { rid }
-			}],
-			renderItem: this.renderRoomInfo
-		}, {
-			data: [
-				{ icon: 'ios-call-outline', name: 'Voice call', disabled: true },
-				{ icon: 'ios-videocam-outline', name: 'Video call', disabled: true }
-			],
-			renderItem: this.renderItem
-		}, {
-			data: [
-				{
-					icon: 'ios-attach',
-					name: 'Files',
-					route: 'RoomFiles',
-					params: { rid }
-				},
-				{
-					icon: 'ios-at-outline',
-					name: 'Mentions',
-					route: 'MentionedMessages',
-					params: { rid }
-				},
-				{
-					icon: 'ios-star-outline',
-					name: 'Starred',
-					route: 'StarredMessages',
-					params: { rid }
-				},
-				{
-					icon: 'ios-search',
-					name: 'Search',
-					route: 'SearchMessages',
-					params: { rid }
-				},
-				{ icon: 'ios-share-outline', name: 'Share', disabled: true },
-				{
-					icon: 'ios-pin',
-					name: 'Pinned',
-					route: 'PinnedMessages',
-					params: { rid }
-				},
-				{
-					icon: 'ios-code',
-					name: 'Snippets',
-					route: 'SnippetedMessages',
-					params: { rid }
-				},
-				{
-					icon: `ios-notifications${ notifications ? '' : '-off' }-outline`,
-					name: `${ notifications ? 'Enable' : 'Disable' } notifications`,
-					event: () => this.toggleNotifications()
-				}
-			],
-			renderItem: this.renderItem
-		}];
+		const sections = [
+			{
+				data: [
+					{
+						icon: 'ios-star',
+						name: 'USER',
+						route: 'RoomInfo',
+						params: { rid }
+					}
+				],
+				renderItem: this.renderRoomInfo
+			},
+			{
+				data: [
+					{ icon: 'ios-call-outline', name: 'Voice call', disabled: true },
+					{ icon: 'ios-videocam-outline', name: 'Video call', disabled: true }
+				],
+				renderItem: this.renderItem
+			},
+			{
+				data: [
+					{
+						icon: 'ios-attach',
+						name: 'Files',
+						route: 'RoomFiles',
+						params: { rid }
+					},
+					{
+						icon: 'ios-at-outline',
+						name: 'Mentions',
+						route: 'MentionedMessages',
+						params: { rid }
+					},
+					{
+						icon: 'ios-star-outline',
+						name: 'Starred',
+						route: 'StarredMessages',
+						params: { rid }
+					},
+					{
+						icon: 'ios-search',
+						name: 'Search',
+						route: 'SearchMessages',
+						params: { rid }
+					},
+					{ icon: 'ios-share-outline', name: 'Share', disabled: true },
+					{
+						icon: 'ios-pin',
+						name: 'Pinned',
+						route: 'PinnedMessages',
+						params: { rid }
+					},
+					{
+						icon: 'ios-code',
+						name: 'Snippets',
+						route: 'SnippetedMessages',
+						params: { rid }
+					},
+					{
+						icon: `ios-notifications${ notifications ? '' : '-off' }-outline`,
+						name: `${ notifications ? 'Enable' : 'Disable' } notifications`,
+						event: () => this.toggleNotifications()
+					}
+				],
+				renderItem: this.renderItem
+			}
+		];
 
 		if (t === 'd') {
 			sections.push({
@@ -202,13 +235,18 @@ export default class RoomActionsView extends LoggedView {
 				renderItem: this.renderItem
 			});
 		} else if (t === 'c' || t === 'p') {
-			const actions = [{
-				icon: 'ios-people',
-				name: 'Members',
-				description: (onlineMembers.length === 1 ? `${ onlineMembers.length } member` : `${ onlineMembers.length } members`),
-				route: 'RoomMembers',
-				params: { rid, members: onlineMembers }
-			}];
+			const actions = [
+				{
+					icon: 'ios-people',
+					name: 'Members',
+					description:
+						onlineMembers.length === 1
+							? `${ onlineMembers.length } member`
+							: `${ onlineMembers.length } members`,
+					route: 'RoomMembers',
+					params: { rid, members: onlineMembers }
+				}
+			];
 
 			if (this.canAddUser) {
 				actions.push({
@@ -250,7 +288,7 @@ export default class RoomActionsView extends LoggedView {
 		const { rid, blocked } = this.state.room;
 		const { member } = this.state;
 		RocketChat.toggleBlockUser(rid, member._id, !blocked);
-	}
+	};
 
 	leaveChannel = () => {
 		const { room } = this.state;
@@ -269,18 +307,22 @@ export default class RoomActionsView extends LoggedView {
 				}
 			]
 		);
-	}
+	};
 
 	toggleNotifications = () => {
 		const { room } = this.state;
-		RocketChat.saveNotificationSettings(room.rid, 'mobilePushNotifications', room.notifications ? 'default' : 'nothing');
-	}
+		RocketChat.saveNotificationSettings(
+			room.rid,
+			'mobilePushNotifications',
+			room.notifications ? 'default' : 'nothing'
+		);
+	};
 
 	renderRoomInfo = ({ item }) => {
 		const { room, member } = this.state;
 		const { name, t, topic } = room;
-		return (
-			this.renderTouchableItem([
+		return this.renderTouchableItem(
+			[
 				<Avatar
 					key='avatar'
 					text={name}
@@ -288,16 +330,31 @@ export default class RoomActionsView extends LoggedView {
 					style={styles.avatar}
 					type={t}
 				>
-					{t === 'd' ? <Status style={sharedStyles.status} id={member._id} /> : null }
+					{t === 'd' ? (
+						<Status style={sharedStyles.status} id={member._id} />
+					) : null}
 				</Avatar>,
 				<View key='name' style={styles.roomTitleContainer}>
-					<Text style={styles.roomTitle}>{ getRoomTitle(room) }</Text>
-					<Text style={styles.roomDescription} ellipsizeMode='tail' numberOfLines={1}>{t === 'd' ? `@${ name }` : topic}</Text>
+					<Text style={styles.roomTitle}>{getRoomTitle(room)}</Text>
+					<Text
+						style={styles.roomDescription}
+						ellipsizeMode='tail'
+						numberOfLines={1}
+					>
+						{t === 'd' ? `@${ name }` : topic}
+					</Text>
 				</View>,
-				<Icon key='icon' name='ios-arrow-forward' size={20} style={styles.sectionItemIcon} color='#ccc' />
-			], item)
+				<Icon
+					key='icon'
+					name='ios-arrow-forward'
+					size={20}
+					style={styles.sectionItemIcon}
+					color='#ccc'
+				/>
+			],
+			item
 		);
-	}
+	};
 
 	renderTouchableItem = (subview, item) => (
 		<Touch
@@ -307,34 +364,76 @@ export default class RoomActionsView extends LoggedView {
 			accessibilityLabel={item.name}
 			accessibilityTraits='button'
 		>
-			<View style={[styles.sectionItem, item.disabled && styles.sectionItemDisabled]}>
+			<View
+				style={[
+					styles.sectionItem,
+					item.disabled && styles.sectionItemDisabled
+				]}
+			>
 				{subview}
 			</View>
 		</Touch>
-	)
+	);
 
 	renderItem = ({ item }) => {
-		const subview = item.type === 'danger' ? [
-			<MaterialIcon key='icon' name={item.icon} size={20} style={[styles.sectionItemIcon, styles.textColorDanger]} />,
-			<Text key='name' style={[styles.sectionItemName, styles.textColorDanger]}>{ item.name }</Text>
-		] : [
-			<Icon key='left-icon' name={item.icon} size={24} style={styles.sectionItemIcon} />,
-			<Text key='name' style={styles.sectionItemName}>{ item.name }</Text>,
-			item.description && <Text key='description' style={styles.sectionItemDescription}>{ item.description }</Text>,
-			<Icon key='right-icon' name='ios-arrow-forward' size={20} style={styles.sectionItemIcon} color='#ccc' />
-		];
+		const subview =
+			item.type === 'danger'
+				? [
+					<MaterialIcon
+						key='icon'
+						name={item.icon}
+						size={20}
+						style={[styles.sectionItemIcon, styles.textColorDanger]}
+					/>,
+					<Text
+						key='name'
+						style={[styles.sectionItemName, styles.textColorDanger]}
+					>
+						{item.name}
+					</Text>
+				  ]
+				: [
+					<Icon
+						key='left-icon'
+						name={item.icon}
+						size={24}
+						style={styles.sectionItemIcon}
+					/>,
+					<Text key='name' style={styles.sectionItemName}>
+						{item.name}
+					</Text>,
+					item.description && (
+						<Text key='description' style={styles.sectionItemDescription}>
+							{item.description}
+						</Text>
+					),
+					<Icon
+						key='right-icon'
+						name='ios-arrow-forward'
+						size={20}
+						style={styles.sectionItemIcon}
+						color='#ccc'
+					/>
+				  ];
 		return this.renderTouchableItem(subview, item);
-	}
+	};
 
 	renderSectionSeparator = (data) => {
 		if (data.trailingItem) {
-			return <View style={[styles.sectionSeparator, data.leadingSection && styles.sectionSeparatorBorder]} />;
+			return (
+				<View
+					style={[
+						styles.sectionSeparator,
+						data.leadingSection && styles.sectionSeparatorBorder
+					]}
+				/>
+			);
 		}
 		if (!data.trailingSection) {
 			return <View style={styles.sectionSeparatorBorder} />;
 		}
 		return null;
-	}
+	};
 
 	render() {
 		return (

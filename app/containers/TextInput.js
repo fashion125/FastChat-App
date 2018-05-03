@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, Text, TextInput, ViewPropTypes, Platform } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	Text,
+	TextInput,
+	ViewPropTypes,
+	Platform
+} from 'react-native';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -58,7 +65,6 @@ const styles = StyleSheet.create({
 	}
 });
 
-
 export default class RCTextInput extends React.PureComponent {
 	static propTypes = {
 		label: PropTypes.string,
@@ -67,30 +73,54 @@ export default class RCTextInput extends React.PureComponent {
 		containerStyle: ViewPropTypes.style,
 		inputStyle: PropTypes.object,
 		inputRef: PropTypes.func
-	}
+	};
 	static defaultProps = {
 		error: {}
-	}
+	};
 	state = {
 		showPassword: false
-	}
+	};
 
-	icon = ({ name, onPress, style }) => <Icon name={name} style={[styles.icon, style]} size={20} onPress={onPress} />
+	icon = ({ name, onPress, style }) => (
+		<Icon
+			name={name}
+			style={[styles.icon, style]}
+			size={20}
+			onPress={onPress}
+		/>
+	);
 
 	iconLeft = name => this.icon({ name, onPress: null, style: { left: 0 } });
 
-	iconPassword = name => this.icon({ name, onPress: () => this.tooglePassword(), style: { right: 0 } });
+	iconPassword = name =>
+		this.icon({
+			name,
+			onPress: () => this.tooglePassword(),
+			style: { right: 0 }
+		});
 
-	tooglePassword = () => this.setState({ showPassword: !this.state.showPassword });
+	tooglePassword = () =>
+		this.setState({ showPassword: !this.state.showPassword });
 
 	render() {
 		const {
-			label, error, secureTextEntry, containerStyle, inputRef, iconLeft, inputStyle, ...inputProps
+			label,
+			error,
+			secureTextEntry,
+			containerStyle,
+			inputRef,
+			iconLeft,
+			inputStyle,
+			...inputProps
 		} = this.props;
 		const { showPassword } = this.state;
 		return (
 			<View style={[styles.inputContainer, containerStyle]}>
-				{ label && <Text style={[styles.label, error.error && styles.labelError]}>{label}</Text> }
+				{label && (
+					<Text style={[styles.label, error.error && styles.labelError]}>
+						{label}
+					</Text>
+				)}
 				<View style={styles.wrap}>
 					<TextInput
 						style={[
@@ -108,7 +138,8 @@ export default class RCTextInput extends React.PureComponent {
 						{...inputProps}
 					/>
 					{iconLeft && this.iconLeft(iconLeft)}
-					{secureTextEntry && this.iconPassword(showPassword ? 'eye-off' : 'eye')}
+					{secureTextEntry &&
+						this.iconPassword(showPassword ? 'eye-off' : 'eye')}
 				</View>
 				{error.error && <Text style={sharedStyles.error}>{error.reason}</Text>}
 			</View>

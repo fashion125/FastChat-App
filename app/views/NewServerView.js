@@ -12,14 +12,17 @@ import TextInput from '../containers/TextInput';
 import Loading from '../containers/Loading';
 import LoggedView from './View';
 
-@connect(state => ({
-	validInstance: !state.server.failure && !state.server.connecting,
-	validating: state.server.connecting,
-	addingServer: state.server.adding
-}), dispatch => ({
-	validateServer: url => dispatch(serverRequest(url)),
-	addServer: url => dispatch(addServer(url))
-}))
+@connect(
+	state => ({
+		validInstance: !state.server.failure && !state.server.connecting,
+		validating: state.server.connecting,
+		addingServer: state.server.adding
+	}),
+	dispatch => ({
+		validateServer: url => dispatch(serverRequest(url)),
+		addServer: url => dispatch(addServer(url))
+	})
+)
 export default class NewServerView extends LoggedView {
 	static propTypes = {
 		validateServer: PropTypes.func.isRequired,
@@ -28,7 +31,7 @@ export default class NewServerView extends LoggedView {
 		validInstance: PropTypes.bool.isRequired,
 		addingServer: PropTypes.bool.isRequired,
 		navigation: PropTypes.object.isRequired
-	}
+	};
 
 	constructor(props) {
 		super('NewServerView', props);
@@ -45,12 +48,12 @@ export default class NewServerView extends LoggedView {
 	onChangeText = (text) => {
 		this.setState({ text });
 		this.props.validateServer(this.completeUrl(text));
-	}
+	};
 
 	submit = () => {
 		this.props.addServer(this.completeUrl(this.state.text));
 		this.props.navigation.navigate('LoginSignup');
-	}
+	};
 
 	completeUrl = (url) => {
 		url = url && url.trim();
@@ -59,12 +62,16 @@ export default class NewServerView extends LoggedView {
 			return this.state.defaultServer;
 		}
 
-		if (/^(\w|[0-9-_]){3,}$/.test(url) &&
-				/^(htt(ps?)?)|(loca((l)?|(lh)?|(lho)?|(lhos)?|(lhost:?\d*)?)$)/.test(url) === false) {
+		if (
+			/^(\w|[0-9-_]){3,}$/.test(url) &&
+			/^(htt(ps?)?)|(loca((l)?|(lh)?|(lho)?|(lhos)?|(lhost:?\d*)?)$)/.test(url) === false
+		) {
 			url = `${ url }.rocket.chat`;
 		}
 
-		if (/^(https?:\/\/)?(((\w|[0-9])+(\.(\w|[0-9-_])+)+)|localhost)(:\d+)?$/.test(url)) {
+		if (
+			/^(https?:\/\/)?(((\w|[0-9])+(\.(\w|[0-9-_])+)+)|localhost)(:\d+)?$/.test(url)
+		) {
 			if (/^localhost(:\d+)?/.test(url)) {
 				url = `http://${ url }`;
 			} else if (/^https?:\/\//.test(url) === false) {
@@ -73,7 +80,7 @@ export default class NewServerView extends LoggedView {
 		}
 
 		return url.replace(/\/+$/, '');
-	}
+	};
 
 	renderValidation = () => {
 		if (this.props.validating) {
@@ -96,7 +103,7 @@ export default class NewServerView extends LoggedView {
 				{this.state.url} is not a valid Rocket.Chat instance
 			</Text>
 		);
-	}
+	};
 
 	render() {
 		const { validInstance } = this.props;
@@ -105,11 +112,16 @@ export default class NewServerView extends LoggedView {
 				contentContainerStyle={styles.container}
 				keyboardVerticalOffset={128}
 			>
-				<ScrollView {...scrollPersistTaps} contentContainerStyle={styles.containerScrollView}>
+				<ScrollView
+					{...scrollPersistTaps}
+					contentContainerStyle={styles.containerScrollView}
+				>
 					<SafeAreaView>
-						<Text style={[styles.loginText, styles.loginTitle]}>Sign in your server</Text>
+						<Text style={[styles.loginText, styles.loginTitle]}>
+							Sign in your server
+						</Text>
 						<TextInput
-							inputRef={e => this.input = e}
+							inputRef={e => (this.input = e)}
 							containerStyle={{ marginBottom: 5 }}
 							label='Your server'
 							placeholder={this.state.defaultServer}

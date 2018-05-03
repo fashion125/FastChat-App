@@ -20,7 +20,6 @@ export function addServer(server) {
 	};
 }
 
-
 export function serverSuccess() {
 	return {
 		type: SERVER.SUCCESS
@@ -33,7 +32,6 @@ export function serverFailure(err) {
 		err
 	};
 }
-
 
 export function changedServer(server) {
 	return {

@@ -4,7 +4,6 @@ const initialState = {
 	permissions: {}
 };
 
-
 export default function permissions(state = initialState.permissions, action) {
 	if (action.type === types.SET_ALL_PERMISSIONS) {
 		return {

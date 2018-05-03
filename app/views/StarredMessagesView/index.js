@@ -5,7 +5,10 @@ import { connect } from 'react-redux';
 import ActionSheet from 'react-native-actionsheet';
 
 import LoggedView from '../View';
-import { openStarredMessages, closeStarredMessages } from '../../actions/starredMessages';
+import {
+	openStarredMessages,
+	closeStarredMessages
+} from '../../actions/starredMessages';
 import styles from './styles';
 import Message from '../../containers/message';
 import { toggleStarRequest } from '../../actions/messages';
@@ -23,7 +26,8 @@ const options = ['Unstar', 'Cancel'];
 		baseUrl: state.settings.Site_Url || state.server ? state.server.server : ''
 	}),
 	dispatch => ({
-		openStarredMessages: (rid, limit) => dispatch(openStarredMessages(rid, limit)),
+		openStarredMessages: (rid, limit) =>
+			dispatch(openStarredMessages(rid, limit)),
 		closeStarredMessages: () => dispatch(closeStarredMessages()),
 		toggleStarRequest: message => dispatch(toggleStarRequest(message))
 	})
@@ -38,7 +42,7 @@ export default class StarredMessagesView extends LoggedView {
 		openStarredMessages: PropTypes.func,
 		closeStarredMessages: PropTypes.func,
 		toggleStarRequest: PropTypes.func
-	}
+	};
 
 	constructor(props) {
 		super('StarredMessagesView', props);
@@ -67,7 +71,7 @@ export default class StarredMessagesView extends LoggedView {
 	onLongPress = (message) => {
 		this.setState({ message });
 		this.actionSheet.show();
-	}
+	};
 
 	handleActionPress = (actionIndex) => {
 		switch (actionIndex) {
@@ -77,11 +81,14 @@ export default class StarredMessagesView extends LoggedView {
 			default:
 				break;
 		}
-	}
+	};
 
 	load = () => {
-		this.props.openStarredMessages(this.props.navigation.state.params.rid, this.limit);
-	}
+		this.props.openStarredMessages(
+			this.props.navigation.state.params.rid,
+			this.limit
+		);
+	};
 
 	moreData = () => {
 		const { loadingMore } = this.state;
@@ -94,13 +101,13 @@ export default class StarredMessagesView extends LoggedView {
 			this.limit += 20;
 			this.load();
 		}
-	}
+	};
 
 	renderEmpty = () => (
 		<View style={styles.listEmptyContainer}>
 			<Text>No starred messages</Text>
 		</View>
-	)
+	);
 
 	renderItem = ({ item }) => (
 		<Message
@@ -112,7 +119,7 @@ export default class StarredMessagesView extends LoggedView {
 			customTimeFormat='MMMM Do YYYY, h:mm:ss a'
 			onLongPress={this.onLongPress}
 		/>
-	)
+	);
 
 	render() {
 		const { loading, loadingMore } = this.state;
@@ -122,27 +129,25 @@ export default class StarredMessagesView extends LoggedView {
 			return this.renderEmpty();
 		}
 
-		return (
-			[
-				<FlatList
-					key='starred-messages-view-list'
-					data={messages}
-					renderItem={this.renderItem}
-					style={styles.list}
-					keyExtractor={item => item._id}
-					onEndReached={this.moreData}
-					ListHeaderComponent={loading && <RCActivityIndicator />}
-					ListFooterComponent={loadingMore && <RCActivityIndicator />}
-				/>,
-				<ActionSheet
-					key='starred-messages-view-action-sheet'
-					ref={o => this.actionSheet = o}
-					title='Actions'
-					options={options}
-					cancelButtonIndex={CANCEL_INDEX}
-					onPress={this.handleActionPress}
-				/>
-			]
-		);
+		return [
+			<FlatList
+				key='starred-messages-view-list'
+				data={messages}
+				renderItem={this.renderItem}
+				style={styles.list}
+				keyExtractor={item => item._id}
+				onEndReached={this.moreData}
+				ListHeaderComponent={loading && <RCActivityIndicator />}
+				ListFooterComponent={loadingMore && <RCActivityIndicator />}
+			/>,
+			<ActionSheet
+				key='starred-messages-view-action-sheet'
+				ref={o => (this.actionSheet = o)}
+				title='Actions'
+				options={options}
+				cancelButtonIndex={CANCEL_INDEX}
+				onPress={this.handleActionPress}
+			/>
+		];
 	}
 }

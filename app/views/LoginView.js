@@ -16,22 +16,25 @@ import { showToast } from '../utils/info';
 import { COLOR_BUTTON_PRIMARY } from '../constants/colors';
 import LoggedView from './View';
 
-@connect(state => ({
-	server: state.server.server,
-	failure: state.login.failure,
-	isFetching: state.login.isFetching,
-	reason: state.login.error && state.login.error.reason,
-	error: state.login.error && state.login.error.error
-}), () => ({
-	loginSubmit: params => RocketChat.loginWithPassword(params)
-}))
+@connect(
+	state => ({
+		server: state.server.server,
+		failure: state.login.failure,
+		isFetching: state.login.isFetching,
+		reason: state.login.error && state.login.error.reason,
+		error: state.login.error && state.login.error.error
+	}),
+	() => ({
+		loginSubmit: params => RocketChat.loginWithPassword(params)
+	})
+)
 export default class LoginView extends LoggedView {
 	static propTypes = {
 		loginSubmit: PropTypes.func.isRequired,
 		navigation: PropTypes.object.isRequired,
 		login: PropTypes.object,
 		server: PropTypes.string
-	}
+	};
 
 	constructor(props) {
 		super('LoginView', props);
@@ -42,7 +45,7 @@ export default class LoginView extends LoggedView {
 	}
 
 	submit = async() => {
-		const {	username, password, code } = this.state;
+		const { username, password, code } = this.state;
 		if (username.trim() === '' || password.trim() === '') {
 			showToast('Email or password field is empty');
 			return;
@@ -55,13 +58,13 @@ export default class LoginView extends LoggedView {
 		} catch (error) {
 			console.warn('LoginView submit', error);
 		}
-	}
+	};
 
 	renderTOTP = () => {
-		if (/totp/ig.test(this.props.error)) {
+		if (/totp/gi.test(this.props.error)) {
 			return (
 				<TextInput
-					inputRef={ref => this.codeInput = ref}
+					inputRef={ref => (this.codeInput = ref)}
 					label='Code'
 					onChangeText={code => this.setState({ code })}
 					placeholder='Code'
@@ -73,7 +76,7 @@ export default class LoginView extends LoggedView {
 			);
 		}
 		return null;
-	}
+	};
 
 	render() {
 		return (
@@ -82,24 +85,35 @@ export default class LoginView extends LoggedView {
 				keyboardVerticalOffset={128}
 				key='login-view'
 			>
-				<ScrollView {...scrollPersistTaps} contentContainerStyle={styles.containerScrollView}>
+				<ScrollView
+					{...scrollPersistTaps}
+					contentContainerStyle={styles.containerScrollView}
+				>
 					<SafeAreaView>
 						<CloseModalButton navigation={this.props.navigation} />
 						<Text style={[styles.loginText, styles.loginTitle]}>Login</Text>
 						<TextInput
 							label='Username'
-							placeholder={this.props.Accounts_EmailOrUsernamePlaceholder || 'Username'}
+							placeholder={
+								this.props.Accounts_EmailOrUsernamePlaceholder || 'Username'
+							}
 							keyboardType='email-address'
 							returnKeyType='next'
 							iconLeft='at'
 							onChangeText={username => this.setState({ username })}
-							onSubmitEditing={() => { this.password.focus(); }}
+							onSubmitEditing={() => {
+								this.password.focus();
+							}}
 						/>
 
 						<TextInput
-							inputRef={(e) => { this.password = e; }}
+							inputRef={(e) => {
+								this.password = e;
+							}}
 							label='Password'
-							placeholder={this.props.Accounts_PasswordPlaceholder || 'Password'}
+							placeholder={
+								this.props.Accounts_PasswordPlaceholder || 'Password'
+							}
 							returnKeyType='done'
 							iconLeft='key-variant'
 							secureTextEntry
@@ -110,26 +124,27 @@ export default class LoginView extends LoggedView {
 						{this.renderTOTP()}
 
 						<View style={styles.alignItemsFlexStart}>
-							<Button
-								title='Login'
-								type='primary'
-								onPress={this.submit}
-							/>
-							<Text style={[styles.loginText, { marginTop: 10 }]}>New in Rocket.Chat? &nbsp;
+							<Button title='Login' type='primary' onPress={this.submit} />
+							<Text style={[styles.loginText, { marginTop: 10 }]}>
+								New in Rocket.Chat? &nbsp;
 								<Text
 									style={{ color: COLOR_BUTTON_PRIMARY }}
 									onPress={() => this.props.navigation.navigate('Register')}
-								>Sign Up
+								>
+									Sign Up
 								</Text>
 							</Text>
 							<Text
 								style={[styles.loginText, { marginTop: 20, fontSize: 13 }]}
 								onPress={() => this.props.navigation.navigate('ForgotPassword')}
-							>Forgot password
+							>
+								Forgot password
 							</Text>
 						</View>
 
-						{this.props.failure && <Text style={styles.error}>{this.props.reason}</Text>}
+						{this.props.failure && (
+							<Text style={styles.error}>{this.props.reason}</Text>
+						)}
 						<Loading visible={this.props.isFetching} />
 					</SafeAreaView>
 				</ScrollView>

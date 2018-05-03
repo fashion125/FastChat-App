@@ -59,23 +59,23 @@ class EventEmitter {
 	}
 }
 
-
 export default class Socket extends EventEmitter {
 	constructor(url, login) {
 		super();
 		this.state = 'active';
 		this.lastping = new Date();
 		this._login = login;
-		this.url = url;// .replace(/^http/, 'ws');
+		this.url = url; // .replace(/^http/, 'ws');
 		this.id = 0;
 		this.subscriptions = {};
 		this.ddp = new EventEmitter();
 		this._logged = false;
-		const waitTimeout = () => setTimeout(async() => {
-			// this.connection.ping();
-			this.send({ msg: 'ping' });
-			this.timeout = setTimeout(() => this.reconnect(), 1000);
-		}, 40000);
+		const waitTimeout = () =>
+			setTimeout(async() => {
+				// this.connection.ping();
+				this.send({ msg: 'ping' });
+				this.timeout = setTimeout(() => this.reconnect(), 1000);
+			}, 40000);
 		const handlePing = () => {
 			this.lastping = new Date();
 			this.send({ msg: 'pong' }, true);
@@ -92,9 +92,12 @@ export default class Socket extends EventEmitter {
 			this.timeout = waitTimeout();
 		};
 
-
 		AppState.addEventListener('change', (nextAppState) => {
-			if (this.state && this.state.match(/inactive/) && nextAppState === 'active') {
+			if (
+				this.state &&
+				this.state.match(/inactive/) &&
+				nextAppState === 'active'
+			) {
 				try {
 					this.send({ msg: 'ping' }, true);
 					// this.connection.ping();
@@ -102,7 +105,11 @@ export default class Socket extends EventEmitter {
 					this.reconnect();
 				}
 			}
-			if (this.state && this.state.match(/background/) && nextAppState === 'active') {
+			if (
+				this.state &&
+				this.state.match(/background/) &&
+				nextAppState === 'active'
+			) {
 				this.emit('background');
 			}
 			this.state = nextAppState;
@@ -111,11 +118,16 @@ export default class Socket extends EventEmitter {
 		this.on('pong', handlePong);
 		this.on('ping', handlePing);
 
-		this.on('result', data => this.ddp.emit(data.id, { id: data.id, result: data.result, error: data.error }));
+		this.on('result', data =>
+			this.ddp.emit(data.id, {
+				id: data.id,
+				result: data.result,
+				error: data.error
+			}));
 		this.on('ready', data => this.ddp.emit(data.subs[0], data));
 		// this.on('error', () => this.reconnect());
 		this.on('disconnected', debounce(() => this.reconnect(), 300));
-		this.on('logged', () => this._logged = true);
+		this.on('logged', () => (this._logged = true));
 
 		this.on('logged', () => {
 			Object.keys(this.subscriptions || {}).forEach((key) => {
@@ -126,7 +138,11 @@ export default class Socket extends EventEmitter {
 		});
 		this.on('open', async() => {
 			this._logged = false;
-			this.send({ msg: 'connect', version: '1', support: ['1', 'pre2', 'pre1'] });
+			this.send({
+				msg: 'connect',
+				version: '1',
+				support: ['1', 'pre2', 'pre1']
+			});
 		});
 
 		this._connect();
@@ -135,7 +151,7 @@ export default class Socket extends EventEmitter {
 		if (!this.lastping) {
 			return false;
 		}
-		if ((Math.abs(this.lastping.getTime() - new Date().getTime()) / 1000) > 50) {
+		if (Math.abs(this.lastping.getTime() - new Date().getTime()) / 1000 > 50) {
 			return false;
 		}
 		return true;
@@ -173,12 +189,17 @@ export default class Socket extends EventEmitter {
 			this.ddp.once(id, (data) => {
 				// console.log(data);
 				this.ddp.removeListener(id, cancel);
-				return (data.error ? reject(data.error) : resolve({ id, ...data }));
+				return data.error ? reject(data.error) : resolve({ id, ...data });
 			});
 		});
 	}
 	get status() {
-		return this.connection && this.connection.readyState === 1 && this.check() && !!this._logged;
+		return (
+			this.connection &&
+			this.connection.readyState === 1 &&
+			this.check() &&
+			!!this._logged
+		);
 	}
 	_close() {
 		try {
@@ -196,7 +217,14 @@ export default class Socket extends EventEmitter {
 			this.lastping = new Date();
 			this._close();
 			clearInterval(this.reconnect_timeout);
-			this.reconnect_timeout = setInterval(() => (!this.connection || this.connection.readyState > 1 || !this.check()) && this.reconnect(), 5000);
+			this.reconnect_timeout = setInterval(
+				() =>
+					(!this.connection ||
+						this.connection.readyState > 1 ||
+						!this.check()) &&
+					this.reconnect(),
+				5000
+			);
 			this.connection = new WebSocket(`${ this.url }/websocket`, null);
 
 			this.connection.onopen = () => {
@@ -205,7 +233,10 @@ export default class Socket extends EventEmitter {
 				this.ddp.emit('open');
 				return this._login && this.login(this._login);
 			};
-			this.connection.onclose = debounce((e) => { console.log('aer'); this.emit('disconnected', e); }, 300);
+			this.connection.onclose = debounce((e) => {
+				console.log('aer');
+				this.emit('disconnected', e);
+			}, 300);
 			this.connection.onmessage = (e) => {
 				try {
 					// console.log('received', e.data, e.target.readyState);
@@ -220,7 +251,7 @@ export default class Socket extends EventEmitter {
 	}
 	logout() {
 		this._login = null;
-		return this.call('logout').then(() => this.subscriptions = {});
+		return this.call('logout').then(() => (this.subscriptions = {}));
 	}
 	disconnect() {
 		this._close();
@@ -239,11 +270,15 @@ export default class Socket extends EventEmitter {
 	}
 	call(method, ...params) {
 		return this.send({
-			msg: 'method', method, params
-		}).then(data => data.result || data.subs).catch((err) => {
-			Answers.logCustom('DDP call Error', err);
-			return Promise.reject(err);
-		});
+			msg: 'method',
+			method,
+			params
+		})
+			.then(data => data.result || data.subs)
+			.catch((err) => {
+				Answers.logCustom('DDP call Error', err);
+				return Promise.reject(err);
+			});
 	}
 	unsubscribe(id) {
 		if (!this.subscriptions[id]) {
@@ -253,31 +288,37 @@ export default class Socket extends EventEmitter {
 		return this.send({
 			msg: 'unsub',
 			id
-		}).then(data => data.result || data.subs).catch((err) => {
-			console.warn('unsubscribe', err);
-			Answers.logCustom('DDP unsubscribe Error', err);
-			return Promise.reject(err);
-		});
+		})
+			.then(data => data.result || data.subs)
+			.catch((err) => {
+				console.warn('unsubscribe', err);
+				Answers.logCustom('DDP unsubscribe Error', err);
+				return Promise.reject(err);
+			});
 	}
 	subscribe(name, ...params) {
 		console.log(name, params);
 		return this.send({
-			msg: 'sub', name, params
-		}).then(({ id }) => {
-			const args = {
-				id,
-				name,
-				params,
-				unsubscribe: () => this.unsubscribe(id)
-			};
+			msg: 'sub',
+			name,
+			params
+		})
+			.then(({ id }) => {
+				const args = {
+					id,
+					name,
+					params,
+					unsubscribe: () => this.unsubscribe(id)
+				};
 
-			this.subscriptions[id] = args;
-			// console.log(args);
-			return args;
-		}).catch((err) => {
-			console.warn('subscribe', err);
-			Answers.logCustom('DDP subscribe Error', err);
-			return Promise.reject(err);
-		});
+				this.subscriptions[id] = args;
+				// console.log(args);
+				return args;
+			})
+			.catch((err) => {
+				console.warn('subscribe', err);
+				Answers.logCustom('DDP subscribe Error', err);
+				return Promise.reject(err);
+			});
 	}
 }

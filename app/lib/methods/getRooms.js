@@ -16,7 +16,10 @@ const getRoomRest = async function() {
 	const updatedSince = lastMessage();
 	const { token, id } = ddp._login;
 	const server = this.ddp.url.replace('ws', 'http');
-	const [subscriptions, rooms] = await Promise.all([get({ token, id, server }, 'subscriptions.get', { updatedSince }), get({ token, id, server }, 'rooms.get', { updatedSince })]);
+	const [subscriptions, rooms] = await Promise.all([
+		get({ token, id, server }, 'subscriptions.get', { updatedSince }),
+		get({ token, id, server }, 'rooms.get', { updatedSince })
+	]);
 	return mergeSubscriptionsRooms(subscriptions, rooms);
 };
 
@@ -24,7 +27,10 @@ const getRoomDpp = async function() {
 	try {
 		const { ddp } = this;
 		const updatedSince = lastMessage();
-		const [subscriptions, rooms] = await Promise.all([ddp.call('subscriptions/get', updatedSince), ddp.call('rooms/get', updatedSince)]);
+		const [subscriptions, rooms] = await Promise.all([
+			ddp.call('subscriptions/get', updatedSince),
+			ddp.call('rooms/get', updatedSince)
+		]);
 		return mergeSubscriptionsRooms(subscriptions, rooms);
 	} catch (e) {
 		return getRoomRest.apply(this);
@@ -36,13 +42,19 @@ export default async function() {
 
 	return new Promise(async(resolve) => {
 		// eslint-disable-next-line
-		const { subscriptions, rooms } = await (false && this.ddp.status ? getRoomDpp.apply(this) : getRoomRest.apply(this));
+		const { subscriptions, rooms } = await (false && this.ddp.status
+			? getRoomDpp.apply(this)
+			: getRoomRest.apply(this));
 
-		const data = rooms.map(room => ({ room, sub: database.objects('subscriptions').filtered('rid == $0', room._id) }));
+		const data = rooms.map(room => ({
+			room,
+			sub: database.objects('subscriptions').filtered('rid == $0', room._id)
+		}));
 
 		InteractionManager.runAfterInteractions(() => {
 			db.write(() => {
-				subscriptions.forEach(subscription => db.create('subscriptions', subscription, true));
+				subscriptions.forEach(subscription =>
+					db.create('subscriptions', subscription, true));
 				data.forEach(({ sub, room }) => sub[0] && merge(sub[0], room));
 			});
 			resolve(data);

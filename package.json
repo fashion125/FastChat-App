@@ -15,7 +15,8 @@
     "snyk-protect": "snyk protect",
     "prepare": "exit 0",
     "fabric-ios": "./scripts/fabric-ios.sh",
-    "fabric-android": "./scripts/fabric-android.sh"
+    "fabric-android": "./scripts/fabric-android.sh",
+    "format": "prettier-eslint --write \"app/**/*.js\""
   },
   "rnpm": {
     "assets": [
@@ -35,6 +36,7 @@
     "js-base64": "^2.4.3",
     "lodash": "^4.17.4",
     "moment": "^2.22.1",
+    "prettier-eslint-cli": "^4.7.1",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
     "react-clone-referenced-element": "^1.0.1",

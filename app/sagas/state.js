@@ -1,5 +1,9 @@
 import { takeLatest, select } from 'redux-saga/effects';
-import { FOREGROUND, BACKGROUND, INACTIVE } from 'redux-enhancer-react-native-appstate';
+import {
+	FOREGROUND,
+	BACKGROUND,
+	INACTIVE
+} from 'redux-enhancer-react-native-appstate';
 
 import RocketChat from '../lib/rocketchat';
 
@@ -20,18 +24,9 @@ const appHasComeBackToBackground = function* appHasComeBackToBackground() {
 };
 
 const root = function* root() {
-	yield takeLatest(
-		FOREGROUND,
-		appHasComeBackToForeground
-	);
-	yield takeLatest(
-		BACKGROUND,
-		appHasComeBackToBackground
-	);
-	yield takeLatest(
-		INACTIVE,
-		appHasComeBackToBackground
-	);
+	yield takeLatest(FOREGROUND, appHasComeBackToForeground);
+	yield takeLatest(BACKGROUND, appHasComeBackToBackground);
+	yield takeLatest(INACTIVE, appHasComeBackToBackground);
 };
 
 export default root;

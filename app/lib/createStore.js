@@ -1,5 +1,9 @@
-import { createStore as reduxCreateStore, applyMiddleware, compose } from 'redux';
-import Reactotron from 'reactotron-react-native' ; // eslint-disable-line
+import {
+	createStore as reduxCreateStore,
+	applyMiddleware,
+	compose
+} from 'redux';
+import Reactotron from 'reactotron-react-native'; // eslint-disable-line
 import createSagaMiddleware from 'redux-saga';
 import applyAppStateListener from 'redux-enhancer-react-native-appstate';
 
@@ -24,10 +28,7 @@ if (__DEV__) {
 	);
 } else {
 	sagaMiddleware = createSagaMiddleware();
-	enhancers = compose(
-		applyAppStateListener(),
-		applyMiddleware(sagaMiddleware)
-	);
+	enhancers = compose(applyAppStateListener(), applyMiddleware(sagaMiddleware));
 }
 
 const store = createStore(reducers, enhancers);

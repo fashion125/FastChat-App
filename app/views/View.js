@@ -8,5 +8,5 @@ export default class extends React.Component {
 	}
 	componentDidCatch = (error, info) => {
 		Answers.logCustom(error, info);
-	}
+	};
 }

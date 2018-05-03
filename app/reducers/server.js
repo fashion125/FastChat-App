@@ -9,7 +9,6 @@ const initialState = {
 	adding: false
 };
 
-
 export default function server(state = initialState, action) {
 	switch (action.type) {
 		case SERVER.REQUEST:

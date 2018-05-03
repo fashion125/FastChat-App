@@ -1,6 +1,10 @@
 import { StyleSheet, Platform } from 'react-native';
 
-import { COLOR_DANGER, COLOR_BUTTON_PRIMARY, COLOR_TEXT } from '../constants/colors';
+import {
+	COLOR_DANGER,
+	COLOR_BUTTON_PRIMARY,
+	COLOR_TEXT
+} from '../constants/colors';
 
 export default StyleSheet.create({
 	container: {

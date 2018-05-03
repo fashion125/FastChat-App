@@ -1,4 +1,8 @@
-import { FOREGROUND, BACKGROUND, INACTIVE } from 'redux-enhancer-react-native-appstate';
+import {
+	FOREGROUND,
+	BACKGROUND,
+	INACTIVE
+} from 'redux-enhancer-react-native-appstate';
 import { APP } from '../actions/actionsTypes';
 
 const initialState = {

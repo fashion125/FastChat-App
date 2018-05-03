@@ -1,5 +1,11 @@
 import React from 'react';
-import { Text, View, Platform, TouchableOpacity, TextInput } from 'react-native';
+import {
+	Text,
+	View,
+	Platform,
+	TouchableOpacity,
+	TextInput
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -34,19 +40,21 @@ const title = (offline, connecting, authenticating, logged) => {
 	return 'Not logged...';
 };
 
-@connect(state => ({
-	user: state.login.user,
-	connected: state.meteor.connected,
-	baseUrl: state.settings.Site_Url || state.server ? state.server.server : '',
+@connect(
+	state => ({
+		user: state.login.user,
+		connected: state.meteor.connected,
+		baseUrl: state.settings.Site_Url || state.server ? state.server.server : '',
 
-	connecting: state.meteor.connecting,
-	authenticating: state.login.isFetching,
-	offline: !state.meteor.connected,
-	logged: !!state.login.token
-}), dispatch => ({
-	setSearch: searchText => dispatch(setSearch(searchText))
-}))
-
+		connecting: state.meteor.connecting,
+		authenticating: state.login.isFetching,
+		offline: !state.meteor.connected,
+		logged: !!state.login.token
+	}),
+	dispatch => ({
+		setSearch: searchText => dispatch(setSearch(searchText))
+	})
+)
 export default class RoomsListHeaderView extends React.PureComponent {
 	static propTypes = {
 		navigation: PropTypes.object.isRequired,
@@ -54,7 +62,7 @@ export default class RoomsListHeaderView extends React.PureComponent {
 		connected: PropTypes.bool,
 		baseUrl: PropTypes.string,
 		setSearch: PropTypes.func
-	}
+	};
 
 	constructor(props) {
 		super(props);
@@ -113,14 +121,26 @@ export default class RoomsListHeaderView extends React.PureComponent {
 		}
 
 		return (
-			<View style={styles.left} accessible accessibilityLabel="Server's list" accessibilityTraits='button'>
+			<View
+				style={styles.left}
+				accessible
+				accessibilityLabel="Server's list"
+				accessibilityTraits='button'
+			>
 				<TouchableOpacity
 					style={styles.headerButton}
-					onPress={() => this.props.navigation.navigate({ key: 'DrawerOpen', routeName: 'DrawerOpen' })}
+					onPress={() =>
+						this.props.navigation.navigate({
+							key: 'DrawerOpen',
+							routeName: 'DrawerOpen'
+						})
+					}
 				>
 					<CachedImage
 						style={styles.serverImage}
-						source={{ uri: encodeURI(`${ this.props.baseUrl }/assets/favicon_32.png`) }}
+						source={{
+							uri: encodeURI(`${ this.props.baseUrl }/assets/favicon_32.png`)
+						}}
 					/>
 				</TouchableOpacity>
 			</View>
@@ -142,19 +162,40 @@ export default class RoomsListHeaderView extends React.PureComponent {
 
 		const t = title(offline, connecting, authenticating, logged);
 
-		const accessibilityLabel = `${ user.username }, ${ this.getUserStatusLabel() }, double tap to change status`;
+		const accessibilityLabel = `${
+			user.username
+		}, ${ this.getUserStatusLabel() }, double tap to change status`;
 		return (
-
-			<TouchableOpacity style={styles.titleContainer} onPress={() => this.showModal()} accessibilityLabel={accessibilityLabel} accessibilityTraits='header'>
-				<Avatar
-					text={user.username}
-					size={24}
-				>
+			<TouchableOpacity
+				style={styles.titleContainer}
+				onPress={() => this.showModal()}
+				accessibilityLabel={accessibilityLabel}
+				accessibilityTraits='header'
+			>
+				<Avatar text={user.username} size={24}>
 					<Status style={[styles.status, styles.user_status]} id={user.id} />
 				</Avatar>
 				<View style={styles.rows}>
-					<Text accessible={false} style={styles.title} ellipsizeMode='tail' numberOfLines={1} allowFontScaling={false}>{this.props.user.username}</Text>
-					{ t && <Text accessible={false} style={styles.status_text} ellipsizeMode='tail' numberOfLines={1} allowFontScaling={false}>{t}</Text>}
+					<Text
+						accessible={false}
+						style={styles.title}
+						ellipsizeMode='tail'
+						numberOfLines={1}
+						allowFontScaling={false}
+					>
+						{this.props.user.username}
+					</Text>
+					{t && (
+						<Text
+							accessible={false}
+							style={styles.status_text}
+							ellipsizeMode='tail'
+							numberOfLines={1}
+							allowFontScaling={false}
+						>
+							{t}
+						</Text>
+					)}
 				</View>
 			</TouchableOpacity>
 		);
@@ -167,7 +208,7 @@ export default class RoomsListHeaderView extends React.PureComponent {
 
 		return (
 			<View style={styles.right}>
-				{Platform.OS === 'android' ?
+				{Platform.OS === 'android' ? (
 					<TouchableOpacity
 						style={styles.headerButton}
 						onPress={() => this.onPressSearchButton()}
@@ -180,8 +221,9 @@ export default class RoomsListHeaderView extends React.PureComponent {
 							size={24}
 							backgroundColor='transparent'
 						/>
-					</TouchableOpacity> : null}
-				{Platform.OS === 'ios' ?
+					</TouchableOpacity>
+				) : null}
+				{Platform.OS === 'ios' ? (
 					<TouchableOpacity
 						style={styles.headerButton}
 						onPress={() => this.createChannel()}
@@ -194,15 +236,21 @@ export default class RoomsListHeaderView extends React.PureComponent {
 							size={24}
 							backgroundColor='transparent'
 						/>
-					</TouchableOpacity> : null
-				}
+					</TouchableOpacity>
+				) : null}
 			</View>
 		);
 	}
 
 	renderModalButton = (status, text) => {
-		const statusStyle = [styles.status, { marginRight: 10, backgroundColor: STATUS_COLORS[status] }];
-		const textStyle = { flex: 1, fontWeight: this.props.user.status === status ? 'bold' : 'normal' };
+		const statusStyle = [
+			styles.status,
+			{ marginRight: 10, backgroundColor: STATUS_COLORS[status] }
+		];
+		const textStyle = {
+			flex: 1,
+			fontWeight: this.props.user.status === status ? 'bold' : 'normal'
+		};
 		return (
 			<TouchableOpacity
 				style={styles.modalButton}
@@ -226,7 +274,7 @@ export default class RoomsListHeaderView extends React.PureComponent {
 					<HeaderBackButton onPress={() => this.onPressCancelSearchButton()} />
 				</View>
 				<TextInput
-					ref={inputSearch => this.inputSearch = inputSearch}
+					ref={inputSearch => (this.inputSearch = inputSearch)}
 					underlineColorAndroid='transparent'
 					style={styles.inputSearch}
 					onChangeText={text => this.onSearchChangeText(text)}

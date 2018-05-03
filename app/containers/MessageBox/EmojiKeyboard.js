@@ -9,7 +9,7 @@ import styles from './styles';
 export default class EmojiKeyboard extends React.PureComponent {
 	onEmojiSelected = (emoji) => {
 		KeyboardRegistry.onItemSelected('EmojiKeyboard', { emoji });
-	}
+	};
 	render() {
 		return (
 			<Provider store={store}>

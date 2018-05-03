@@ -4,7 +4,10 @@ import { FlatList, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import LoggedView from '../View';
-import { openMentionedMessages, closeMentionedMessages } from '../../actions/mentionedMessages';
+import {
+	openMentionedMessages,
+	closeMentionedMessages
+} from '../../actions/mentionedMessages';
 import styles from './styles';
 import Message from '../../containers/message';
 import RCActivityIndicator from '../../containers/ActivityIndicator';
@@ -17,7 +20,8 @@ import RCActivityIndicator from '../../containers/ActivityIndicator';
 		baseUrl: state.settings.Site_Url || state.server ? state.server.server : ''
 	}),
 	dispatch => ({
-		openMentionedMessages: (rid, limit) => dispatch(openMentionedMessages(rid, limit)),
+		openMentionedMessages: (rid, limit) =>
+			dispatch(openMentionedMessages(rid, limit)),
 		closeMentionedMessages: () => dispatch(closeMentionedMessages())
 	})
 )
@@ -30,7 +34,7 @@ export default class MentionedMessagesView extends LoggedView {
 		baseUrl: PropTypes.string,
 		openMentionedMessages: PropTypes.func,
 		closeMentionedMessages: PropTypes.func
-	}
+	};
 
 	constructor(props) {
 		super('MentionedMessagesView', props);
@@ -56,8 +60,11 @@ export default class MentionedMessagesView extends LoggedView {
 	}
 
 	load = () => {
-		this.props.openMentionedMessages(this.props.navigation.state.params.rid, this.limit);
-	}
+		this.props.openMentionedMessages(
+			this.props.navigation.state.params.rid,
+			this.limit
+		);
+	};
 
 	moreData = () => {
 		const { loadingMore } = this.state;
@@ -70,13 +77,13 @@ export default class MentionedMessagesView extends LoggedView {
 			this.limit += 20;
 			this.load();
 		}
-	}
+	};
 
 	renderEmpty = () => (
 		<View style={styles.listEmptyContainer}>
 			<Text>No mentioned messages</Text>
 		</View>
-	)
+	);
 
 	renderItem = ({ item }) => (
 		<Message
@@ -88,7 +95,7 @@ export default class MentionedMessagesView extends LoggedView {
 			customTimeFormat='MMMM Do YYYY, h:mm:ss a'
 			onLongPress={() => {}}
 		/>
-	)
+	);
 
 	render() {
 		const { loading, loadingMore } = this.state;

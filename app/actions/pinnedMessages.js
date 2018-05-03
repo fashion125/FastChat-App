@@ -14,7 +14,6 @@ export function readyPinnedMessages() {
 	};
 }
 
-
 export function closePinnedMessages() {
 	return {
 		type: types.PINNED_MESSAGES.CLOSE

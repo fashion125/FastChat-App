@@ -14,7 +14,6 @@ export function readyMentionedMessages() {
 	};
 }
 
-
 export function closeMentionedMessages() {
 	return {
 		type: types.MENTIONED_MESSAGES.CLOSE

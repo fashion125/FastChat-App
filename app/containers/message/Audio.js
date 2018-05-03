@@ -52,12 +52,13 @@ const styles = StyleSheet.create({
 });
 
 const formatTime = (t = 0, duration = 0) => {
-	const time = Math.min(
-		Math.max(t, 0),
-		duration
-	);
-	const formattedMinutes = Math.floor(time / 60).toFixed(0).padStart(2, 0);
-	const formattedSeconds = Math.floor(time % 60).toFixed(0).padStart(2, 0);
+	const time = Math.min(Math.max(t, 0), duration);
+	const formattedMinutes = Math.floor(time / 60)
+		.toFixed(0)
+		.padStart(2, 0);
+	const formattedSeconds = Math.floor(time % 60)
+		.toFixed(0)
+		.padStart(2, 0);
 	return `${ formattedMinutes }:${ formattedSeconds }`;
 };
 
@@ -69,7 +70,7 @@ export default class Audio extends React.PureComponent {
 		file: PropTypes.object.isRequired,
 		baseUrl: PropTypes.string.isRequired,
 		user: PropTypes.object.isRequired
-	}
+	};
 
 	constructor(props) {
 		super(props);
@@ -81,7 +82,9 @@ export default class Audio extends React.PureComponent {
 			currentTime: 0,
 			duration: 0,
 			paused: true,
-			uri: `${ baseUrl }${ file.audio_url }?rc_uid=${ user.id }&rc_token=${ user.token }`
+			uri: `${ baseUrl }${ file.audio_url }?rc_uid=${ user.id }&rc_token=${
+				user.token
+			}`
 		};
 	}
 
@@ -117,49 +120,52 @@ export default class Audio extends React.PureComponent {
 	render() {
 		const { uri, paused } = this.state;
 		const { description } = this.props.file;
-		return (
-			[
-				<View key='audio' style={styles.audioContainer}>
-					<Video
-						ref={(ref) => {
-							this.player = ref;
+		return [
+			<View key='audio' style={styles.audioContainer}>
+				<Video
+					ref={(ref) => {
+						this.player = ref;
+					}}
+					source={{ uri }}
+					onLoad={this.onLoad}
+					onProgress={this.onProgress}
+					onEnd={this.onEnd}
+					paused={paused}
+					repeat={false}
+				/>
+				<TouchableOpacity
+					style={styles.playPauseButton}
+					onPress={() => this.togglePlayPause()}
+				>
+					{paused ? (
+						<Icon name='play-arrow' size={50} style={styles.playPauseIcon} />
+					) : (
+						<Icon name='pause' size={47} style={styles.playPauseIcon} />
+					)}
+				</TouchableOpacity>
+				<View style={styles.progressContainer}>
+					<Text style={[styles.label, styles.currentTime]}>
+						{this.getCurrentTime()}
+					</Text>
+					<Text style={[styles.label, styles.duration]}>
+						{this.getDuration()}
+					</Text>
+					<Slider
+						value={this.state.currentTime}
+						maximumValue={this.state.duration}
+						minimumValue={0}
+						animateTransitions
+						animationConfig={{
+							duration: 250,
+							easing: Easing.linear,
+							delay: 0
 						}}
-						source={{ uri }}
-						onLoad={this.onLoad}
-						onProgress={this.onProgress}
-						onEnd={this.onEnd}
-						paused={paused}
-						repeat={false}
+						thumbTintColor='#ccc'
+						onValueChange={value => this.setState({ currentTime: value })}
 					/>
-					<TouchableOpacity
-						style={styles.playPauseButton}
-						onPress={() => this.togglePlayPause()}
-					>
-						{
-							paused ? <Icon name='play-arrow' size={50} style={styles.playPauseIcon} />
-								: <Icon name='pause' size={47} style={styles.playPauseIcon} />
-						}
-					</TouchableOpacity>
-					<View style={styles.progressContainer}>
-						<Text style={[styles.label, styles.currentTime]}>{this.getCurrentTime()}</Text>
-						<Text style={[styles.label, styles.duration]}>{this.getDuration()}</Text>
-						<Slider
-							value={this.state.currentTime}
-							maximumValue={this.state.duration}
-							minimumValue={0}
-							animateTransitions
-							animationConfig={{
-								duration: 250,
-								easing: Easing.linear,
-								delay: 0
-							}}
-							thumbTintColor='#ccc'
-							onValueChange={value => this.setState({ currentTime: value })}
-						/>
-					</View>
-				</View>,
-				<Markdown key='description' msg={description} />
-			]
-		);
+				</View>
+			</View>,
+			<Markdown key='description' msg={description} />
+		];
 	}
 }

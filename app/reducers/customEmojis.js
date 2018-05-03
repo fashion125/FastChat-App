@@ -4,8 +4,10 @@ const initialState = {
 	customEmojis: {}
 };
 
-
-export default function customEmojis(state = initialState.customEmojis, action) {
+export default function customEmojis(
+	state = initialState.customEmojis,
+	action
+) {
 	if (action.type === types.SET_CUSTOM_EMOJIS) {
 		return {
 			...state,

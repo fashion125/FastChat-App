@@ -6,16 +6,14 @@ import { connect } from 'react-redux';
 class PrivacyPolicyView extends React.Component {
 	static propTypes = {
 		privacyPolicy: PropTypes.string
-	}
+	};
 
 	static navigationOptions = () => ({
 		title: 'Terms of service'
 	});
 
 	render() {
-		return (
-			<WebView source={{ html: this.props.privacyPolicy }} />
-		);
+		return <WebView source={{ html: this.props.privacyPolicy }} />;
 	}
 }
 

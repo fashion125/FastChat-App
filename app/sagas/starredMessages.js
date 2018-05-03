@@ -6,7 +6,10 @@ import { readyStarredMessages } from '../actions/starredMessages';
 let sub;
 let newSub;
 
-const openStarredMessagesRoom = function* openStarredMessagesRoom({ rid, limit }) {
+const openStarredMessagesRoom = function* openStarredMessagesRoom({
+	rid,
+	limit
+}) {
 	newSub = yield RocketChat.subscribe('starredMessages', rid, limit);
 	yield put(readyStarredMessages());
 	if (sub) {
@@ -17,10 +20,14 @@ const openStarredMessagesRoom = function* openStarredMessagesRoom({ rid, limit }
 
 const closeStarredMessagesRoom = function* closeStarredMessagesRoom() {
 	if (sub) {
-		yield sub.unsubscribe().catch(e => console.warn('closeStarredMessagesRoom sub', e));
+		yield sub
+			.unsubscribe()
+			.catch(e => console.warn('closeStarredMessagesRoom sub', e));
 	}
 	if (newSub) {
-		yield newSub.unsubscribe().catch(e => console.warn('closeStarredMessagesRoom newSub', e));
+		yield newSub
+			.unsubscribe()
+			.catch(e => console.warn('closeStarredMessagesRoom newSub', e));
 	}
 };
 

@@ -20,13 +20,12 @@ const styles = StyleSheet.create({
 	offline: !state.meteor.connected,
 	logged: !!state.login.token
 }))
-
 export default class Banner extends React.PureComponent {
 	static propTypes = {
 		connecting: PropTypes.bool,
 		authenticating: PropTypes.bool,
 		offline: PropTypes.bool
-	}
+	};
 	render() {
 		const {
 			connecting, authenticating, offline, logged
@@ -43,7 +42,9 @@ export default class Banner extends React.PureComponent {
 		if (connecting) {
 			return (
 				<View style={[styles.bannerContainer, { backgroundColor: '#0d0' }]}>
-					<Text style={[styles.bannerText, { color: '#fff' }]}>Connecting...</Text>
+					<Text style={[styles.bannerText, { color: '#fff' }]}>
+						Connecting...
+					</Text>
 				</View>
 			);
 		}
@@ -51,7 +52,9 @@ export default class Banner extends React.PureComponent {
 		if (authenticating) {
 			return (
 				<View style={[styles.bannerContainer, { backgroundColor: 'orange' }]}>
-					<Text style={[styles.bannerText, { color: '#a00' }]}>Authenticating...</Text>
+					<Text style={[styles.bannerText, { color: '#a00' }]}>
+						Authenticating...
+					</Text>
 				</View>
 			);
 		}
@@ -62,7 +65,9 @@ export default class Banner extends React.PureComponent {
 
 		return (
 			<View style={[styles.bannerContainer, { backgroundColor: 'orange' }]}>
-				<Text style={[styles.bannerText, { color: '#a00' }]}>Not logged...</Text>
+				<Text style={[styles.bannerText, { color: '#a00' }]}>
+					Not logged...
+				</Text>
 			</View>
 		);
 	}

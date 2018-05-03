@@ -1,7 +1,7 @@
 import { post } from './helpers/rest';
 import database from '../realm';
 
-const	readMessagesREST = function readMessagesREST(rid) {
+const readMessagesREST = function readMessagesREST(rid) {
 	const { token, id } = this.ddp._login;
 	const server = this.ddp.url.replace('ws', 'http');
 	return post({ token, id, server }, 'subscriptions.read', { rid });
@@ -18,7 +18,9 @@ const readMessagesDDP = function readMessagesDDP(rid) {
 export default async function readMessages(rid) {
 	const { database: db } = database;
 	// eslint-disable-next-line
-	const data = await (false && this.ddp.status ? readMessagesDDP.call(this, rid) : readMessagesREST.call(this, rid));
+	const data = await (false && this.ddp.status
+		? readMessagesDDP.call(this, rid)
+		: readMessagesREST.call(this, rid));
 	const [subscription] = db.objects('subscriptions').filtered('rid = $0', rid);
 	db.write(() => {
 		subscription.open = true;

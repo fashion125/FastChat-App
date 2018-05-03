@@ -25,12 +25,17 @@ export default function room(state = initialState, action) {
 		case types.ROOM.ADD_USER_TYPING:
 			return {
 				...state,
-				usersTyping: [...state.usersTyping.filter(user => user !== action.username), action.username]
+				usersTyping: [
+					...state.usersTyping.filter(user => user !== action.username),
+					action.username
+				]
 			};
 		case types.ROOM.REMOVE_USER_TYPING:
 			return {
 				...state,
-				usersTyping: [...state.usersTyping.filter(user => user !== action.username)]
+				usersTyping: [
+					...state.usersTyping.filter(user => user !== action.username)
+				]
 			};
 		case types.ROOM.LAYOUT_ANIMATION:
 			return {

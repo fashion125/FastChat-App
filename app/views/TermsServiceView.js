@@ -6,16 +6,14 @@ import { connect } from 'react-redux';
 class TermsServiceView extends React.Component {
 	static propTypes = {
 		termsService: PropTypes.string
-	}
+	};
 
 	static navigationOptions = () => ({
 		title: 'Terms of service'
 	});
 
 	render() {
-		return (
-			<WebView source={{ html: this.props.termsService }} />
-		);
+		return <WebView source={{ html: this.props.termsService }} />;
 	}
 }
 

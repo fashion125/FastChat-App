@@ -8,7 +8,7 @@ export default class Panel extends React.Component {
 		open: PropTypes.bool.isRequired,
 		children: PropTypes.node.isRequired,
 		style: PropTypes.object
-	}
+	};
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -38,14 +38,11 @@ export default class Panel extends React.Component {
 		const finalValue = !nextProps.open ? 0 : this.height;
 
 		this.state.animation.setValue(initialValue);
-		Animated.timing(
-			this.state.animation,
-			{
-				toValue: finalValue,
-				duration: 150,
-				useNativeDriver: true
-			}
-		).start();
+		Animated.timing(this.state.animation, {
+			toValue: finalValue,
+			duration: 150,
+			useNativeDriver: true
+		}).start();
 	}
 	set _height(h) {
 		this.height = h || this.height;
@@ -55,7 +52,12 @@ export default class Panel extends React.Component {
 			<Animated.View
 				style={[{ height: this.state.animation }, this.props.style]}
 			>
-				<View onLayout={({ nativeEvent }) => this._height = nativeEvent.layout.height} style={{ position: !this.first ? 'relative' : 'absolute' }}>
+				<View
+					onLayout={({ nativeEvent }) =>
+						(this._height = nativeEvent.layout.height)
+					}
+					style={{ position: !this.first ? 'relative' : 'absolute' }}
+				>
 					{this.props.children}
 				</View>
 			</Animated.View>

@@ -11,11 +11,14 @@ import styles from './styles';
 const margin = Platform.OS === 'android' ? 40 : 20;
 const tabEmojiStyle = { fontSize: 15 };
 
-@connect(state => ({
-	showReactionPicker: state.messages.showReactionPicker
-}), dispatch => ({
-	toggleReactionPicker: message => dispatch(toggleReactionPicker(message))
-}))
+@connect(
+	state => ({
+		showReactionPicker: state.messages.showReactionPicker
+	}),
+	dispatch => ({
+		toggleReactionPicker: message => dispatch(toggleReactionPicker(message))
+	})
+)
 @responsive
 export default class ReactionPicker extends React.Component {
 	static propTypes = {
@@ -26,7 +29,10 @@ export default class ReactionPicker extends React.Component {
 	};
 
 	shouldComponentUpdate(nextProps) {
-		return nextProps.showReactionPicker !== this.props.showReactionPicker || this.props.window.width !== nextProps.window.width;
+		return (
+			nextProps.showReactionPicker !== this.props.showReactionPicker ||
+			this.props.window.width !== nextProps.window.width
+		);
 	}
 
 	onEmojiSelected(emoji, shortname) {
@@ -37,9 +43,12 @@ export default class ReactionPicker extends React.Component {
 	}
 
 	render() {
-		const { window: { width, height }, showReactionPicker } = this.props;
+		const {
+			window: { width, height },
+			showReactionPicker
+		} = this.props;
 
-		return (showReactionPicker ?
+		return showReactionPicker ? (
 			<Modal
 				isVisible={this.props.showReactionPicker}
 				style={{ alignItems: 'center' }}
@@ -48,14 +57,24 @@ export default class ReactionPicker extends React.Component {
 				animationIn='fadeIn'
 				animationOut='fadeOut'
 			>
-				<View style={[styles.reactionPickerContainer, { width: width - margin, height: Math.min(width, height) - (margin * 2) }]}>
+				<View
+					style={[
+						styles.reactionPickerContainer,
+						{
+							width: width - margin,
+							height: Math.min(width, height) - margin * 2
+						}
+					]}
+				>
 					<EmojiPicker
 						tabEmojiStyle={tabEmojiStyle}
 						width={Math.min(width, height) - margin}
-						onEmojiSelected={(emoji, shortname) => this.onEmojiSelected(emoji, shortname)}
+						onEmojiSelected={(emoji, shortname) =>
+							this.onEmojiSelected(emoji, shortname)
+						}
 					/>
 				</View>
-			</Modal> : null
-		);
+			</Modal>
+		) : null;
 	}
 }

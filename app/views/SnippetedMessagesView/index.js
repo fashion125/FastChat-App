@@ -4,7 +4,10 @@ import { FlatList, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import LoggedView from '../View';
-import { openSnippetedMessages, closeSnippetedMessages } from '../../actions/snippetedMessages';
+import {
+	openSnippetedMessages,
+	closeSnippetedMessages
+} from '../../actions/snippetedMessages';
 import styles from './styles';
 import Message from '../../containers/message';
 import RCActivityIndicator from '../../containers/ActivityIndicator';
@@ -17,7 +20,8 @@ import RCActivityIndicator from '../../containers/ActivityIndicator';
 		baseUrl: state.settings.Site_Url || state.server ? state.server.server : ''
 	}),
 	dispatch => ({
-		openSnippetedMessages: (rid, limit) => dispatch(openSnippetedMessages(rid, limit)),
+		openSnippetedMessages: (rid, limit) =>
+			dispatch(openSnippetedMessages(rid, limit)),
 		closeSnippetedMessages: () => dispatch(closeSnippetedMessages())
 	})
 )
@@ -30,7 +34,7 @@ export default class SnippetedMessagesView extends LoggedView {
 		baseUrl: PropTypes.string,
 		openSnippetedMessages: PropTypes.func,
 		closeSnippetedMessages: PropTypes.func
-	}
+	};
 
 	constructor(props) {
 		super('SnippetedMessagesView', props);
@@ -56,7 +60,10 @@ export default class SnippetedMessagesView extends LoggedView {
 	}
 
 	load() {
-		this.props.openSnippetedMessages(this.props.navigation.state.params.rid, this.limit);
+		this.props.openSnippetedMessages(
+			this.props.navigation.state.params.rid,
+			this.limit
+		);
 	}
 
 	moreData = () => {
@@ -70,13 +77,13 @@ export default class SnippetedMessagesView extends LoggedView {
 			this.limit += 20;
 			this.load();
 		}
-	}
+	};
 
 	renderEmpty = () => (
 		<View style={styles.listEmptyContainer}>
 			<Text>No snippeted messages</Text>
 		</View>
-	)
+	);
 
 	renderItem = ({ item }) => (
 		<Message

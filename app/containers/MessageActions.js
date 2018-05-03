@@ -27,9 +27,11 @@ import RocketChat from '../lib/rocketchat';
 		permissions: state.permissions,
 		permalink: state.messages.permalink,
 		Message_AllowDeleting: state.settings.Message_AllowDeleting,
-		Message_AllowDeleting_BlockDeleteInMinutes: state.settings.Message_AllowDeleting_BlockDeleteInMinutes,
+		Message_AllowDeleting_BlockDeleteInMinutes:
+			state.settings.Message_AllowDeleting_BlockDeleteInMinutes,
 		Message_AllowEditing: state.settings.Message_AllowEditing,
-		Message_AllowEditing_BlockEditInMinutes: state.settings.Message_AllowEditing_BlockEditInMinutes,
+		Message_AllowEditing_BlockEditInMinutes:
+			state.settings.Message_AllowEditing_BlockEditInMinutes,
 		Message_AllowPinning: state.settings.Message_AllowPinning,
 		Message_AllowStarring: state.settings.Message_AllowStarring
 	}),
@@ -83,7 +85,10 @@ export default class MessageActions extends React.Component {
 	}
 
 	async componentWillReceiveProps(nextProps) {
-		if (nextProps.showActions !== this.props.showActions && nextProps.showActions) {
+		if (
+			nextProps.showActions !== this.props.showActions &&
+			nextProps.showActions
+		) {
 			const { actionMessage } = nextProps;
 			// Cancel
 			this.options = ['Cancel'];
@@ -136,26 +141,32 @@ export default class MessageActions extends React.Component {
 				this.ActionSheet.show();
 				Vibration.vibrate(50);
 			});
-		} else if (this.props.permalink !== nextProps.permalink && nextProps.permalink) {
+		} else if (
+			this.props.permalink !== nextProps.permalink &&
+			nextProps.permalink
+		) {
 			// copy permalink
 			if (this.state.copyPermalink) {
 				this.setState({ copyPermalink: false });
 				await Clipboard.setString(nextProps.permalink);
 				showToast('Permalink copied to clipboard!');
 				this.props.permalinkClear();
-			// quote
+				// quote
 			} else if (this.state.quote) {
 				this.setState({ quote: false });
 				const msg = `[ ](${ nextProps.permalink }) `;
 				this.props.setInput({ msg });
 
-			// reply
+				// reply
 			} else if (this.state.reply) {
 				this.setState({ reply: false });
 				let msg = `[ ](${ nextProps.permalink }) `;
 
 				// if original message wasn't sent by current user and neither from a direct room
-				if (this.props.user.username !== this.props.actionMessage.u.username && this.props.room.t !== 'd') {
+				if (
+					this.props.user.username !== this.props.actionMessage.u.username &&
+					this.props.room.t !== 'd'
+				) {
 					msg += `@${ this.props.actionMessage.u.username } `;
 				}
 				this.props.setInput({ msg });
@@ -168,14 +179,19 @@ export default class MessageActions extends React.Component {
 	}
 
 	setPermissions() {
-		const permissions = ['edit-message', 'delete-message', 'force-delete-message'];
+		const permissions = [
+			'edit-message',
+			'delete-message',
+			'force-delete-message'
+		];
 		const result = RocketChat.hasPermission(permissions, this.props.room.rid);
 		this.hasEditPermission = result[permissions[0]];
 		this.hasDeletePermission = result[permissions[1]];
 		this.hasForceDeletePermission = result[permissions[2]];
 	}
 
-	isOwn = props => props.actionMessage.u && props.actionMessage.u._id === props.user.id;
+	isOwn = props =>
+		props.actionMessage.u && props.actionMessage.u._id === props.user.id;
 
 	isRoomReadOnly = () => this.props.room.ro;
 
@@ -190,7 +206,8 @@ export default class MessageActions extends React.Component {
 		if (!(this.hasEditPermission || (isEditAllowed && editOwn))) {
 			return false;
 		}
-		const blockEditInMinutes = this.props.Message_AllowEditing_BlockEditInMinutes;
+		const blockEditInMinutes = this.props
+			.Message_AllowEditing_BlockEditInMinutes;
 		if (blockEditInMinutes) {
 			let msgTs;
 			if (props.actionMessage.ts != null) {
@@ -203,7 +220,7 @@ export default class MessageActions extends React.Component {
 			return currentTsDiff < blockEditInMinutes;
 		}
 		return true;
-	}
+	};
 
 	allowDelete = (props) => {
 		if (this.isRoomReadOnly()) {
@@ -211,13 +228,20 @@ export default class MessageActions extends React.Component {
 		}
 		const deleteOwn = this.isOwn(props);
 		const { Message_AllowDeleting: isDeleteAllowed } = this.props;
-		if (!(this.hasDeletePermission || (isDeleteAllowed && deleteOwn) || this.hasForceDeletePermission)) {
+		if (
+			!(
+				this.hasDeletePermission ||
+				(isDeleteAllowed && deleteOwn) ||
+				this.hasForceDeletePermission
+			)
+		) {
 			return false;
 		}
 		if (this.hasForceDeletePermission) {
 			return true;
 		}
-		const blockDeleteInMinutes = this.props.Message_AllowDeleting_BlockDeleteInMinutes;
+		const blockDeleteInMinutes = this.props
+			.Message_AllowDeleting_BlockDeleteInMinutes;
 		if (blockDeleteInMinutes != null && blockDeleteInMinutes !== 0) {
 			let msgTs;
 			if (props.actionMessage.ts != null) {
@@ -230,7 +254,7 @@ export default class MessageActions extends React.Component {
 			return currentTsDiff < blockDeleteInMinutes;
 		}
 		return true;
-	}
+	};
 
 	handleDelete() {
 		Alert.alert(
@@ -259,11 +283,14 @@ export default class MessageActions extends React.Component {
 	handleCopy = async() => {
 		await Clipboard.setString(this.props.actionMessage.msg);
 		showToast('Copied to clipboard!');
-	}
+	};
 
 	handleShare = async() => {
 		Share.share({
-			message: this.props.actionMessage.msg.content.replace(/<(?:.|\n)*?>/gm, '')
+			message: this.props.actionMessage.msg.content.replace(
+				/<(?:.|\n)*?>/gm,
+				''
+			)
 		});
 	};
 
@@ -330,12 +357,12 @@ export default class MessageActions extends React.Component {
 				break;
 		}
 		this.props.actionsHide();
-	}
+	};
 
 	render() {
 		return (
 			<ActionSheet
-				ref={o => this.ActionSheet = o}
+				ref={o => (this.ActionSheet = o)}
 				title='Messages actions'
 				options={this.options}
 				cancelButtonIndex={this.CANCEL_INDEX}

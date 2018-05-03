@@ -6,7 +6,10 @@ import { readyMentionedMessages } from '../actions/mentionedMessages';
 let sub;
 let newSub;
 
-const openMentionedMessagesRoom = function* openMentionedMessagesRoom({ rid, limit }) {
+const openMentionedMessagesRoom = function* openMentionedMessagesRoom({
+	rid,
+	limit
+}) {
 	newSub = yield RocketChat.subscribe('mentionedMessages', rid, limit);
 	yield put(readyMentionedMessages());
 	if (sub) {
@@ -17,10 +20,14 @@ const openMentionedMessagesRoom = function* openMentionedMessagesRoom({ rid, lim
 
 const closeMentionedMessagesRoom = function* closeMentionedMessagesRoom() {
 	if (sub) {
-		yield sub.unsubscribe().catch(e => console.warn('closeMentionedMessagesRoom sub', e));
+		yield sub
+			.unsubscribe()
+			.catch(e => console.warn('closeMentionedMessagesRoom sub', e));
 	}
 	if (newSub) {
-		yield newSub.unsubscribe().catch(e => console.warn('closeMentionedMessagesRoom newSub', e));
+		yield newSub
+			.unsubscribe()
+			.catch(e => console.warn('closeMentionedMessagesRoom newSub', e));
 	}
 };
 

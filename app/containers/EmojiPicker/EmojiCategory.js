@@ -12,15 +12,27 @@ const emojisPerRow = Platform.OS === 'ios' ? 8 : 9;
 
 const renderEmoji = (emoji, size) => {
 	if (emoji.isCustom) {
-		return <CustomEmoji style={[styles.customCategoryEmoji, { height: size - 8, width: size - 8 }]} emoji={emoji} />;
+		return (
+			<CustomEmoji
+				style={[
+					styles.customCategoryEmoji,
+					{ height: size - 8, width: size - 8 }
+				]}
+				emoji={emoji}
+			/>
+		);
 	}
 	return (
-		<Text style={[styles.categoryEmoji, { height: size, width: size, fontSize: size - 14 }]}>
+		<Text
+			style={[
+				styles.categoryEmoji,
+				{ height: size, width: size, fontSize: size - 14 }
+			]}
+		>
 			{emojify(`:${ emoji }:`, { output: 'unicode' })}
 		</Text>
 	);
 };
-
 
 @responsive
 export default class EmojiCategory extends React.Component {
@@ -35,7 +47,9 @@ export default class EmojiCategory extends React.Component {
 		super(props);
 		const { width, height } = this.props.window;
 
-		this.size = Math.min(this.props.width || width, height) / (this.props.emojisPerRow || emojisPerRow);
+		this.size =
+			Math.min(this.props.width || width, height) /
+			(this.props.emojisPerRow || emojisPerRow);
 		this.emojis = props.emojis;
 	}
 
@@ -51,7 +65,8 @@ export default class EmojiCategory extends React.Component {
 				onPress={() => this.props.onEmojiSelected(emoji)}
 			>
 				{renderEmoji(emoji, size)}
-			</TouchableOpacity>);
+			</TouchableOpacity>
+		);
 	}
 
 	render() {
@@ -62,7 +77,11 @@ export default class EmojiCategory extends React.Component {
 				renderItem={({ item }) => this.renderItem(item, this.size)}
 				numColumns={emojisPerRow}
 				initialNumToRender={45}
-				getItemLayout={(data, index) => ({ length: this.size, offset: this.size * index, index })}
+				getItemLayout={(data, index) => ({
+					length: this.size,
+					offset: this.size * index,
+					index
+				})}
 				removeClippedSubviews
 				{...scrollPersistTaps}
 			/>

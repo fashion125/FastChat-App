@@ -1,7 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { View, Text, Switch, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import {
+	View,
+	Text,
+	Switch,
+	TouchableOpacity,
+	SafeAreaView,
+	ScrollView
+} from 'react-native';
 
 import RCTextInput from '../containers/TextInput';
 import Loading from '../containers/Loading';
@@ -89,7 +96,10 @@ export default class CreateChannelView extends LoggedView {
 				contentContainerStyle={styles.container}
 				keyboardVerticalOffset={128}
 			>
-				<ScrollView {...scrollPersistTaps} contentContainerStyle={styles.containerScrollView}>
+				<ScrollView
+					{...scrollPersistTaps}
+					contentContainerStyle={styles.containerScrollView}
+				>
 					<SafeAreaView>
 						<RCTextInput
 							label='Channel Name'
@@ -112,17 +122,16 @@ export default class CreateChannelView extends LoggedView {
 								}
 							]}
 						>
-							{this.state.type ? (
-								'Everyone can access this channel'
-							) : (
-								'Just invited people can access this channel'
-							)}
+							{this.state.type
+								? 'Everyone can access this channel'
+								: 'Just invited people can access this channel'}
 						</Text>
 						<TouchableOpacity
 							onPress={() => this.submit()}
 							style={[
 								styles.buttonContainer_white,
-								this.state.channelName.length === 0 || this.props.createChannel.isFetching
+								this.state.channelName.length === 0 ||
+								this.props.createChannel.isFetching
 									? styles.disabledButton
 									: styles.enabledButton
 							]}

@@ -95,7 +95,9 @@ const styles = StyleSheet.create({
 		borderColor: '#fff'
 	}
 });
-const markdownStyle = { block: { marginBottom: 0, flexWrap: 'wrap', flexDirection: 'row' } };
+const markdownStyle = {
+	block: { marginBottom: 0, flexWrap: 'wrap', flexDirection: 'row' }
+};
 
 const parseInline = (parse, content, state) => {
 	const isCurrentlyInline = state.inline || false;
@@ -104,7 +106,9 @@ const parseInline = (parse, content, state) => {
 	state.inline = isCurrentlyInline;
 	return result;
 };
-const parseCaptureInline = (capture, parse, state) => ({ content: parseInline(parse, capture[1], state) });
+const parseCaptureInline = (capture, parse, state) => ({
+	content: parseInline(parse, capture[1], state)
+});
 const customRules = {
 	strong: {
 		order: -4,
@@ -139,14 +143,18 @@ const renderNumber = (unread, userMentions) => {
 		unread = `@ ${ unread }`;
 	}
 
-	return (
-		<Text style={styles.number}>
-			{ unread }
-		</Text>
-	);
+	return <Text style={styles.number}>{unread}</Text>;
 };
 
-const attrs = ['name', 'unread', 'userMentions', 'alert', 'showLastMessage', 'type', '_updatedAt'];
+const attrs = [
+	'name',
+	'unread',
+	'userMentions',
+	'alert',
+	'showLastMessage',
+	'type',
+	'_updatedAt'
+];
 @connect(state => ({
 	user: state.login && state.login.user,
 	StoreLastMessage: state.settings.Store_Last_Message
@@ -169,17 +177,21 @@ export default class RoomItem extends React.Component {
 		user: PropTypes.object,
 		avatarSize: PropTypes.number,
 		statusStyle: ViewPropTypes.style
-	}
+	};
 
 	static defaultProps = {
 		showLastMessage: true,
 		avatarSize: 46
-	}
+	};
 	shouldComponentUpdate(nextProps) {
 		const oldlastMessage = this.props.lastMessage;
 		const newLastmessage = nextProps.lastMessage;
 
-		if (oldlastMessage && newLastmessage && oldlastMessage.ts !== newLastmessage.ts) {
+		if (
+			oldlastMessage &&
+			newLastmessage &&
+			oldlastMessage.ts !== newLastmessage.ts
+		) {
 			return true;
 		}
 		return attrs.some(key => nextProps[key] !== this.props[key]);
@@ -188,13 +200,17 @@ export default class RoomItem extends React.Component {
 		const {
 			type, name, id, avatarSize, statusStyle
 		} = this.props;
-		return (<Avatar text={name} size={avatarSize} type={type}>{type === 'd' ? <Status style={[styles.status, statusStyle]} id={id} /> : null }</Avatar>);
+		return (
+			<Avatar text={name} size={avatarSize} type={type}>
+				{type === 'd' ? (
+					<Status style={[styles.status, statusStyle]} id={id} />
+				) : null}
+			</Avatar>
+		);
 	}
 
 	get lastMessage() {
-		const {
-			lastMessage, type, showLastMessage
-		} = this.props;
+		const { lastMessage, type, showLastMessage } = this.props;
 
 		if (!this.props.StoreLastMessage || !showLastMessage) {
 			return '';
@@ -207,25 +223,34 @@ export default class RoomItem extends React.Component {
 
 		if (lastMessage.u.username === this.props.user.username) {
 			prefix = 'You: ';
-		}	else if (type !== 'd') {
+		} else if (type !== 'd') {
 			prefix = `${ lastMessage.u.username }: `;
 		}
 
-		const msg = `${ prefix }${ lastMessage.msg.replace(/[\n\t\r]/igm, '') }`;
+		const msg = `${ prefix }${ lastMessage.msg.replace(/[\n\t\r]/gim, '') }`;
 		const maxChars = 35;
-		return `${ msg.slice(0, maxChars) }${ msg.replace(/:[a-z0-9]+:/gi, ':::').length > maxChars ? '...' : '' }`;
+		return `${ msg.slice(0, maxChars) }${
+			msg.replace(/:[a-z0-9]+:/gi, ':::').length > maxChars ? '...' : ''
+		}`;
 	}
 
-	formatDate = date => moment(date).calendar(null, {
-		lastDay: '[Yesterday]',
-		sameDay: 'h:mm A',
-		lastWeek: 'dddd',
-		sameElse: 'MMM D'
-	})
+	formatDate = date =>
+		moment(date).calendar(null, {
+			lastDay: '[Yesterday]',
+			sameDay: 'h:mm A',
+			lastWeek: 'dddd',
+			sameElse: 'MMM D'
+		});
 
 	render() {
 		const {
-			favorite, unread, userMentions, name, _updatedAt, alert, status
+			favorite,
+			unread,
+			userMentions,
+			name,
+			_updatedAt,
+			alert,
+			status
 		} = this.props;
 
 		const date = this.formatDate(_updatedAt);
@@ -258,11 +283,32 @@ export default class RoomItem extends React.Component {
 					{this.icon}
 					<View style={styles.roomNameView}>
 						<View style={styles.firstRow}>
-							<Text style={[styles.roomName, alert && styles.alert]} ellipsizeMode='tail' numberOfLines={1}>{ name }</Text>
-							{_updatedAt ? <Text style={[styles.update, alert && styles.updateAlert]} ellipsizeMode='tail' numberOfLines={1}>{ date }</Text> : null}
+							<Text
+								style={[styles.roomName, alert && styles.alert]}
+								ellipsizeMode='tail'
+								numberOfLines={1}
+							>
+								{name}
+							</Text>
+							{_updatedAt ? (
+								<Text
+									style={[styles.update, alert && styles.updateAlert]}
+									ellipsizeMode='tail'
+									numberOfLines={1}
+								>
+									{date}
+								</Text>
+							) : null}
 						</View>
 						<View style={styles.row}>
-							{status === messagesStatus.ERROR ? <Icon name='error-outline' color='red' size={12} style={{ marginRight: 5, alignSelf: 'center' }} /> : null }
+							{status === messagesStatus.ERROR ? (
+								<Icon
+									name='error-outline'
+									color='red'
+									size={12}
+									style={{ marginRight: 5, alignSelf: 'center' }}
+								/>
+							) : null}
 							<Markdown
 								msg={this.lastMessage}
 								style={styles.lastMessage}

@@ -33,7 +33,10 @@ export default class MessageErrorActions extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (nextProps.showErrorActions !== this.props.showErrorActions && nextProps.showErrorActions) {
+		if (
+			nextProps.showErrorActions !== this.props.showErrorActions &&
+			nextProps.showErrorActions
+		) {
 			this.ActionSheet.show();
 		}
 	}
@@ -42,10 +45,12 @@ export default class MessageErrorActions extends React.Component {
 
 	handleDelete = () => {
 		database.write(() => {
-			const msg = database.objects('messages').filtered('_id = $0', this.props.actionMessage._id);
+			const msg = database
+				.objects('messages')
+				.filtered('_id = $0', this.props.actionMessage._id);
 			database.delete(msg);
 		});
-	}
+	};
 
 	handleActionPress = (actionIndex) => {
 		switch (actionIndex) {
@@ -59,12 +64,12 @@ export default class MessageErrorActions extends React.Component {
 				break;
 		}
 		this.props.errorActionsHide();
-	}
+	};
 
 	render() {
 		return (
 			<ActionSheet
-				ref={o => this.ActionSheet = o}
+				ref={o => (this.ActionSheet = o)}
 				title='Messages actions'
 				options={this.options}
 				cancelButtonIndex={this.CANCEL_INDEX}

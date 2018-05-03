@@ -8,7 +8,6 @@ import QuoteMark from './QuoteMark';
 import Avatar from '../Avatar';
 import openLink from '../../utils/openLink';
 
-
 const styles = StyleSheet.create({
 	button: {
 		flex: 1,
@@ -68,7 +67,10 @@ const onPress = (attachment) => {
 // Support <http://link|Text>
 const formatText = text =>
 	text.replace(
-		new RegExp('(?:<|<)((?:https|http):\\/\\/[^\\|]+)\\|(.+?)(?=>|>)(?:>|>)', 'gm'),
+		new RegExp(
+			'(?:<|<)((?:https|http):\\/\\/[^\\|]+)\\|(.+?)(?=>|>)(?:>|>)',
+			'gm'
+		),
 		(match, url, title) => `[${ title }](${ url })`
 	);
 
@@ -90,13 +92,16 @@ const Reply = ({ attachment, timeFormat }) => {
 		);
 	};
 
-	const renderAuthor = () => (
-		attachment.author_name ? <Text style={styles.author}>{attachment.author_name}</Text> : null
-	);
+	const renderAuthor = () =>
+		(attachment.author_name ? (
+			<Text style={styles.author}>{attachment.author_name}</Text>
+		) : null);
 
 	const renderTime = () => {
-		const time = attachment.ts ? moment(attachment.ts).format(timeFormat) : null;
-		return time ? <Text style={styles.time}>{ time }</Text> : null;
+		const time = attachment.ts
+			? moment(attachment.ts).format(timeFormat)
+			: null;
+		return time ? <Text style={styles.time}>{time}</Text> : null;
 	};
 
 	const renderTitle = () => {
@@ -112,9 +117,8 @@ const Reply = ({ attachment, timeFormat }) => {
 		);
 	};
 
-	const renderText = () => (
-		attachment.text ? <Markdown msg={formatText(attachment.text)} /> : null
-	);
+	const renderText = () =>
+		(attachment.text ? <Markdown msg={formatText(attachment.text)} /> : null);
 
 	const renderFields = () => {
 		if (!attachment.fields) {
@@ -124,7 +128,13 @@ const Reply = ({ attachment, timeFormat }) => {
 		return (
 			<View style={styles.fieldsContainer}>
 				{attachment.fields.map(field => (
-					<View key={field.title} style={[styles.fieldContainer, { width: field.short ? '50%' : '100%' }]}>
+					<View
+						key={field.title}
+						style={[
+							styles.fieldContainer,
+							{ width: field.short ? '50%' : '100%' }
+						]}
+					>
 						<Text style={styles.fieldTitle}>{field.title}</Text>
 						<Text>{field.value}</Text>
 					</View>
@@ -134,16 +144,20 @@ const Reply = ({ attachment, timeFormat }) => {
 	};
 
 	return (
-		<TouchableOpacity
-			onPress={() => onPress(attachment)}
-			style={styles.button}
-		>
+		<TouchableOpacity onPress={() => onPress(attachment)} style={styles.button}>
 			<QuoteMark color={attachment.color} />
 			<View style={styles.attachmentContainer}>
 				{renderTitle()}
 				{renderText()}
 				{renderFields()}
-				{attachment.attachments && attachment.attachments.map(attach => <Reply key={attach.text} attachment={attach} timeFormat={timeFormat} />)}
+				{attachment.attachments &&
+					attachment.attachments.map(attach => (
+						<Reply
+							key={attach.text}
+							attachment={attach}
+							timeFormat={timeFormat}
+						/>
+					))}
 			</View>
 		</TouchableOpacity>
 	);

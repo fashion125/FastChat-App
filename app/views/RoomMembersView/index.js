@@ -22,7 +22,7 @@ import { showToast } from '../../utils/info';
 export default class MentionedMessagesView extends LoggedView {
 	static propTypes = {
 		navigation: PropTypes.object
-	}
+	};
 
 	static navigationOptions = ({ navigation }) => {
 		const params = navigation.state.params || {};
@@ -82,33 +82,39 @@ export default class MentionedMessagesView extends LoggedView {
 	updateRoom = async() => {
 		const [room] = this.rooms;
 		await this.setState({ room });
-	}
+	};
 
 	onSearchChangeText = (text) => {
 		let membersFiltered = [];
 		if (text) {
-			membersFiltered = this.state.members.filter(m => m.username.toLowerCase().match(text.toLowerCase()));
+			membersFiltered = this.state.members.filter(m =>
+				m.username.toLowerCase().match(text.toLowerCase()));
 		}
 		this.setState({ filtering: !!text, membersFiltered });
-	}
+	};
 
 	onPressToogleStatus = async() => {
 		const allUsers = !this.state.allUsers;
 		this.props.navigation.setParams({ allUsers });
-		const membersResult = await RocketChat.getRoomMembers(this.state.rid, allUsers);
+		const membersResult = await RocketChat.getRoomMembers(
+			this.state.rid,
+			allUsers
+		);
 		const members = membersResult.records;
 		this.setState({ allUsers, members });
-	}
+	};
 
 	onPressUser = async(item) => {
-		const subscriptions = database.objects('subscriptions').filtered('name = $0', item.username);
+		const subscriptions = database
+			.objects('subscriptions')
+			.filtered('name = $0', item.username);
 		if (subscriptions.length) {
 			goRoom({ rid: subscriptions[0].rid, name: subscriptions[0].name });
 		} else {
 			const room = await RocketChat.createDirectMessage(item.username);
 			goRoom({ room: room.rid, name: item.username });
 		}
-	}
+	};
 
 	onLongPressUser = (user) => {
 		if (!this.permissions['mute-user']) {
@@ -126,17 +132,21 @@ export default class MentionedMessagesView extends LoggedView {
 		this.setState({ userLongPressed: user });
 		Vibration.vibrate(50);
 		this.ActionSheet.show();
-	}
+	};
 
 	handleMute = async() => {
 		const { rid, userLongPressed } = this.state;
 		try {
-			await RocketChat.toggleMuteUserInRoom(rid, userLongPressed.username, !userLongPressed.muted);
+			await RocketChat.toggleMuteUserInRoom(
+				rid,
+				userLongPressed.username,
+				!userLongPressed.muted
+			);
 			showToast(`User has been ${ userLongPressed.muted ? 'unmuted' : 'muted' }!`);
 		} catch (error) {
 			console.warn('handleMute', error);
 		}
-	}
+	};
 
 	handleActionPress = (actionIndex) => {
 		switch (actionIndex) {
@@ -146,7 +156,7 @@ export default class MentionedMessagesView extends LoggedView {
 			default:
 				break;
 		}
-	}
+	};
 
 	renderSearchBar = () => (
 		<View style={styles.searchBoxView}>
@@ -160,7 +170,7 @@ export default class MentionedMessagesView extends LoggedView {
 				blurOnSubmit
 			/>
 		</View>
-	)
+	);
 
 	renderSeparator = () => <View style={styles.separator} />;
 
@@ -176,31 +186,29 @@ export default class MentionedMessagesView extends LoggedView {
 			avatarSize={30}
 			statusStyle={styles.status}
 		/>
-	)
+	);
 
 	render() {
 		const { filtering, members, membersFiltered } = this.state;
-		return (
-			[
-				<FlatList
-					key='room-members-view-list'
-					data={filtering ? membersFiltered : members}
-					renderItem={this.renderItem}
-					style={styles.list}
-					keyExtractor={item => item._id}
-					ItemSeparatorComponent={this.renderSeparator}
-					ListHeaderComponent={this.renderSearchBar}
-					{...scrollPersistTaps}
-				/>,
-				<ActionSheet
-					key='room-members-actionsheet'
-					ref={o => this.ActionSheet = o}
-					title='Actions'
-					options={this.actionSheetOptions}
-					cancelButtonIndex={this.CANCEL_INDEX}
-					onPress={this.handleActionPress}
-				/>
-			]
-		);
+		return [
+			<FlatList
+				key='room-members-view-list'
+				data={filtering ? membersFiltered : members}
+				renderItem={this.renderItem}
+				style={styles.list}
+				keyExtractor={item => item._id}
+				ItemSeparatorComponent={this.renderSeparator}
+				ListHeaderComponent={this.renderSearchBar}
+				{...scrollPersistTaps}
+			/>,
+			<ActionSheet
+				key='room-members-actionsheet'
+				ref={o => (this.ActionSheet = o)}
+				title='Actions'
+				options={this.actionSheetOptions}
+				cancelButtonIndex={this.CANCEL_INDEX}
+				onPress={this.handleActionPress}
+			/>
+		];
 	}
 }

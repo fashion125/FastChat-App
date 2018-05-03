@@ -2,7 +2,13 @@ import ActionButton from 'react-native-action-button';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Platform, View, TextInput, FlatList, LayoutAnimation } from 'react-native';
+import {
+	Platform,
+	View,
+	TextInput,
+	FlatList,
+	LayoutAnimation
+} from 'react-native';
 import { connect } from 'react-redux';
 import database from '../../lib/realm';
 import RocketChat from '../../lib/rocketchat';
@@ -27,7 +33,7 @@ export default class RoomsListView extends LoggedView {
 		Site_Url: PropTypes.string,
 		server: PropTypes.string,
 		searchText: PropTypes.string
-	}
+	};
 
 	static navigationOptions = ({ navigation }) => ({
 		header: <Header subview={<RoomsListHeader navigation={navigation} />} />
@@ -40,7 +46,10 @@ export default class RoomsListView extends LoggedView {
 			search: []
 		};
 		this._keyExtractor = this._keyExtractor.bind(this);
-		this.data = database.objects('subscriptions').filtered('archived != true && open == true').sorted('roomUpdatedAt', true);
+		this.data = database
+			.objects('subscriptions')
+			.filtered('archived != true && open == true')
+			.sorted('roomUpdatedAt', true);
 	}
 
 	componentDidMount() {
@@ -56,7 +65,10 @@ export default class RoomsListView extends LoggedView {
 	componentWillReceiveProps(props) {
 		if (this.props.server !== props.server) {
 			this.data.removeListener(this.updateState);
-			this.data = database.objects('subscriptions').filtered('archived != true && open == true').sorted('roomUpdatedAt', true);
+			this.data = database
+				.objects('subscriptions')
+				.filtered('archived != true && open == true')
+				.sorted('roomUpdatedAt', true);
 			this.data.addListener(this.updateState);
 		} else if (this.props.searchText !== props.searchText) {
 			this.search(props.searchText);
@@ -86,7 +98,10 @@ export default class RoomsListView extends LoggedView {
 			});
 		}
 
-		let data = database.objects('subscriptions').filtered('name CONTAINS[c] $0', searchText).slice(0, 7);
+		let data = database
+			.objects('subscriptions')
+			.filtered('name CONTAINS[c] $0', searchText)
+			.slice(0, 7);
 
 		const usernames = data.map(sub => sub.map);
 		try {
@@ -96,21 +111,27 @@ export default class RoomsListView extends LoggedView {
 				}
 
 				const { users, rooms } = await Promise.race([
-					RocketChat.spotlight(searchText, usernames, { users: true, rooms: true }),
-					new Promise((resolve, reject) => this.oldPromise = reject)
+					RocketChat.spotlight(searchText, usernames, {
+						users: true,
+						rooms: true
+					}),
+					new Promise((resolve, reject) => (this.oldPromise = reject))
 				]);
 
-				data = data.concat(users.map(user => ({
-					...user,
-					rid: user.username,
-					name: user.username,
-					t: 'd',
-					search: true
-				})), rooms.map(room => ({
-					rid: room._id,
-					...room,
-					search: true
-				})));
+				data = data.concat(
+					users.map(user => ({
+						...user,
+						rid: user.username,
+						name: user.username,
+						t: 'd',
+						search: true
+					})),
+					rooms.map(room => ({
+						rid: room._id,
+						...room,
+						search: true
+					}))
+				);
 
 				delete this.oldPromise;
 			}
@@ -125,20 +146,26 @@ export default class RoomsListView extends LoggedView {
 	_onPressItem = async(item = {}) => {
 		// if user is using the search we need first to join/create room
 		if (!item.search) {
-			return this.props.navigation.navigate({ key: `Room-${ item._id }`, routeName: 'Room', params: { room: item, ...item } });
+			return this.props.navigation.navigate({
+				key: `Room-${ item._id }`,
+				routeName: 'Room',
+				params: { room: item, ...item }
+			});
 		}
 		if (item.t === 'd') {
 			const sub = await RocketChat.createDirectMessageAndWait(item.username);
 			return goRoom({ room: sub, name: sub.name });
 		}
 		return goRoom(item);
-	}
+	};
 
 	_createChannel() {
 		this.props.navigation.navigate({
 			key: 'SelectedUsers',
 			routeName: 'SelectedUsers',
-			params: { nextAction: () => this.props.navigation.navigate('CreateChannel') }
+			params: {
+				nextAction: () => this.props.navigation.navigate('CreateChannel')
+			}
 		});
 	}
 
@@ -162,21 +189,23 @@ export default class RoomsListView extends LoggedView {
 
 	renderItem = ({ item }) => {
 		const id = item.rid.replace(this.props.user.id, '').trim();
-		return (<RoomItem
-			alert={item.alert}
-			unread={item.unread}
-			userMentions={item.userMentions}
-			favorite={item.f}
-			lastMessage={item.lastMessage}
-			name={item.name}
-			_updatedAt={item.roomUpdatedAt}
-			key={item._id}
-			id={id}
-			type={item.t}
-			baseUrl={this.props.Site_Url}
-			onPress={() => this._onPressItem(item)}
-		/>);
-	}
+		return (
+			<RoomItem
+				alert={item.alert}
+				unread={item.unread}
+				userMentions={item.userMentions}
+				favorite={item.f}
+				lastMessage={item.lastMessage}
+				name={item.name}
+				_updatedAt={item.roomUpdatedAt}
+				key={item._id}
+				id={id}
+				type={item.t}
+				baseUrl={this.props.Site_Url}
+				onPress={() => this._onPressItem(item)}
+			/>
+		);
+	};
 
 	renderList = () => (
 		<FlatList
@@ -190,11 +219,17 @@ export default class RoomsListView extends LoggedView {
 			removeClippedSubviews
 			keyboardShouldPersistTaps='always'
 		/>
-	)
+	);
 
 	renderCreateButtons = () => (
 		<ActionButton buttonColor='rgba(231,76,60,1)'>
-			<ActionButton.Item buttonColor='#9b59b6' title='Create Channel' onPress={() => { this._createChannel(); }} >
+			<ActionButton.Item
+				buttonColor='#9b59b6'
+				title='Create Channel'
+				onPress={() => {
+					this._createChannel();
+				}}
+			>
 				<Icon name='md-chatbubbles' style={styles.actionButtonIcon} />
 			</ActionButton.Item>
 		</ActionButton>
@@ -204,5 +239,6 @@ export default class RoomsListView extends LoggedView {
 		<View style={styles.container}>
 			{this.renderList()}
 			{Platform.OS === 'android' && this.renderCreateButtons()}
-		</View>)
+		</View>
+	);
 }

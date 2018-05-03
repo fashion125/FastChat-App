@@ -30,7 +30,7 @@ export default class RoomFilesView extends LoggedView {
 		baseUrl: PropTypes.string,
 		openRoomFiles: PropTypes.func,
 		closeRoomFiles: PropTypes.func
-	}
+	};
 
 	constructor(props) {
 		super('RoomFilesView', props);
@@ -56,8 +56,11 @@ export default class RoomFilesView extends LoggedView {
 	}
 
 	load = () => {
-		this.props.openRoomFiles(this.props.navigation.state.params.rid, this.limit);
-	}
+		this.props.openRoomFiles(
+			this.props.navigation.state.params.rid,
+			this.limit
+		);
+	};
 
 	moreData = () => {
 		const { loadingMore } = this.state;
@@ -70,13 +73,13 @@ export default class RoomFilesView extends LoggedView {
 			this.limit += 20;
 			this.load();
 		}
-	}
+	};
 
 	renderEmpty = () => (
 		<View style={styles.listEmptyContainer}>
 			<Text>No files</Text>
 		</View>
-	)
+	);
 
 	renderItem = ({ item }) => (
 		<Message
@@ -87,7 +90,7 @@ export default class RoomFilesView extends LoggedView {
 			customTimeFormat='MMMM Do YYYY, h:mm:ss a'
 			onLongPress={() => {}}
 		/>
-	)
+	);
 
 	render() {
 		const { messages, ready } = this.props;

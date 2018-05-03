@@ -10,13 +10,16 @@ const getLastMessage = () => {
 	return setting && setting._updatedAt;
 };
 
-
 export default async function() {
 	const lastMessage = getLastMessage();
-	const result = await (!lastMessage ? this.ddp.call('permissions/get') : this.ddp.call('permissions/get', new Date(lastMessage)));
+	const result = await (!lastMessage
+		? this.ddp.call('permissions/get')
+		: this.ddp.call('permissions/get', new Date(lastMessage)));
 	const permissions = this._preparePermissions(result.update || result);
 	console.log('getPermissions', permissions);
-	InteractionManager.runAfterInteractions(() => database.write(() =>
-		permissions.forEach(permission => database.create('permissions', permission, true))));
+	InteractionManager.runAfterInteractions(() =>
+		database.write(() =>
+			permissions.forEach(permission =>
+				database.create('permissions', permission, true))));
 	reduxStore.dispatch(actions.setAllPermissions(this.parsePermissions(permissions)));
 }

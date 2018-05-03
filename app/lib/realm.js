@@ -149,7 +149,9 @@ const attachment = {
 		ts: { type: 'date', optional: true },
 		attachments: { type: 'list', objectType: 'attachment' },
 		fields: {
-			type: 'list', objectType: 'attachmentFields', default: []
+			type: 'list',
+			objectType: 'attachmentFields',
+			default: []
 		}
 	}
 };
@@ -324,9 +326,7 @@ class DB {
 	databases = {
 		serversDB: new Realm({
 			path: 'default.realm',
-			schema: [
-				serversSchema
-			],
+			schema: [serversSchema],
 			deleteRealmIfMigrationNeeded: true
 		})
 	};
@@ -351,11 +351,11 @@ class DB {
 
 	setActiveDB(database = '') {
 		const path = database.replace(/(^\w+:|^)\/\//, '');
-		return this.databases.activeDB = new Realm({
+		return (this.databases.activeDB = new Realm({
 			path: `${ path }.realm`,
 			schema,
 			deleteRealmIfMigrationNeeded: true
-		});
+		}));
 	}
 }
 export default new DB();

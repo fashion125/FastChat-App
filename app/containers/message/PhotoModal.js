@@ -31,7 +31,7 @@ export default class PhotoModal extends React.PureComponent {
 		image: PropTypes.string.isRequired,
 		isVisible: PropTypes.bool,
 		onClose: PropTypes.func.isRequired
-	}
+	};
 	render() {
 		const {
 			image, isVisible, onClose, title
@@ -48,7 +48,10 @@ export default class PhotoModal extends React.PureComponent {
 					</View>
 				</TouchableWithoutFeedback>
 				<View style={styles.imageWrapper}>
-					<ScrollView contentContainerStyle={styles.imageWrapper} maximumZoomScale={5}>
+					<ScrollView
+						contentContainerStyle={styles.imageWrapper}
+						maximumZoomScale={5}
+					>
 						<TouchableWithoutFeedback onPress={onClose}>
 							<CachedImage
 								style={styles.image}

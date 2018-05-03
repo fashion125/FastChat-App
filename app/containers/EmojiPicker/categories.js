@@ -1,4 +1,15 @@
-const list = ['frequentlyUsed', 'custom', 'people', 'nature', 'food', 'activity', 'travel', 'objects', 'symbols', 'flags'];
+const list = [
+	'frequentlyUsed',
+	'custom',
+	'people',
+	'nature',
+	'food',
+	'activity',
+	'travel',
+	'objects',
+	'symbols',
+	'flags'
+];
 const tabs = [
 	{
 		tabLabel: '🕒',

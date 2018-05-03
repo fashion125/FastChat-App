@@ -1,6 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, ScrollView, TouchableOpacity, SafeAreaView, Keyboard, Alert } from 'react-native';
+import {
+	Text,
+	View,
+	ScrollView,
+	TouchableOpacity,
+	SafeAreaView,
+	Keyboard,
+	Alert
+} from 'react-native';
 import { connect } from 'react-redux';
 
 import LoggedView from '../View';
@@ -61,12 +69,14 @@ export default class RoomInfoEditView extends LoggedView {
 		};
 	}
 
-
 	async componentDidMount() {
 		await this.updateRoom();
 		this.init();
 		this.rooms.addListener(this.updateRoom);
-		this.permissions = RocketChat.hasPermission(PERMISSIONS_ARRAY, this.state.room.rid);
+		this.permissions = RocketChat.hasPermission(
+			PERMISSIONS_ARRAY,
+			this.state.room.rid
+		);
 	}
 
 	componentWillUnmount() {
@@ -76,11 +86,18 @@ export default class RoomInfoEditView extends LoggedView {
 	updateRoom = () => {
 		const [room] = this.rooms;
 		this.setState({ room });
-	}
+	};
 
 	init = () => {
 		const {
-			name, description, topic, announcement, t, ro, reactWhenReadOnly, joinCodeRequired
+			name,
+			description,
+			topic,
+			announcement,
+			t,
+			ro,
+			reactWhenReadOnly,
+			joinCodeRequired
 		} = this.state.room;
 		// fake password just to user knows about it
 		this.randomValue = random(15);
@@ -94,38 +111,55 @@ export default class RoomInfoEditView extends LoggedView {
 			reactWhenReadOnly,
 			joinCode: joinCodeRequired ? this.randomValue : ''
 		});
-	}
+	};
 
 	clearErrors = () => {
 		this.setState({
 			nameError: {}
 		});
-	}
+	};
 
 	reset = () => {
 		this.clearErrors();
 		this.init();
-	}
+	};
 
 	formIsChanged = () => {
 		const {
-			room, name, description, topic, announcement, t, ro, reactWhenReadOnly, joinCode
+			room,
+			name,
+			description,
+			topic,
+			announcement,
+			t,
+			ro,
+			reactWhenReadOnly,
+			joinCode
 		} = this.state;
-		return !(room.name === name &&
+		return !(
+			room.name === name &&
 			room.description === description &&
 			room.topic === topic &&
 			room.announcement === announcement &&
 			this.randomValue === joinCode &&
-			room.t === 'p' === t &&
+			(room.t === 'p') === t &&
 			room.ro === ro &&
 			room.reactWhenReadOnly === reactWhenReadOnly
 		);
-	}
+	};
 
 	submit = async() => {
 		Keyboard.dismiss();
 		const {
-			room, name, description, topic, announcement, t, ro, reactWhenReadOnly, joinCode
+			room,
+			name,
+			description,
+			topic,
+			announcement,
+			t,
+			ro,
+			reactWhenReadOnly,
+			joinCode
 		} = this.state;
 
 		this.setState({ saving: true });
@@ -192,7 +226,7 @@ export default class RoomInfoEditView extends LoggedView {
 				showToast('Settings succesfully changed!');
 			}
 		}, 100);
-	}
+	};
 
 	delete = () => {
 		Alert.alert(
@@ -211,7 +245,7 @@ export default class RoomInfoEditView extends LoggedView {
 			],
 			{ cancelable: false }
 		);
-	}
+	};
 
 	toggleArchive = () => {
 		const { archived } = this.state.room;
@@ -238,62 +272,93 @@ export default class RoomInfoEditView extends LoggedView {
 			],
 			{ cancelable: false }
 		);
-	}
+	};
 
-	hasDeletePermission = () => (
-		this.state.room.t === 'p' ? this.permissions[PERMISSION_DELETE_P] : this.permissions[PERMISSION_DELETE_C]
-	);
+	hasDeletePermission = () =>
+		(this.state.room.t === 'p'
+			? this.permissions[PERMISSION_DELETE_P]
+			: this.permissions[PERMISSION_DELETE_C]);
 
-	hasArchivePermission = () => (
-		this.permissions[PERMISSION_ARCHIVE] || this.permissions[PERMISSION_UNARCHIVE]
-	);
+	hasArchivePermission = () =>
+		this.permissions[PERMISSION_ARCHIVE] ||
+		this.permissions[PERMISSION_UNARCHIVE];
 
 	render() {
 		const {
-			name, nameError, description, topic, announcement, t, ro, reactWhenReadOnly, room, joinCode
+			name,
+			nameError,
+			description,
+			topic,
+			announcement,
+			t,
+			ro,
+			reactWhenReadOnly,
+			room,
+			joinCode
 		} = this.state;
 		return (
 			<KeyboardView
 				contentContainerStyle={sharedStyles.container}
 				keyboardVerticalOffset={128}
 			>
-				<ScrollView {...scrollPersistTaps} contentContainerStyle={sharedStyles.containerScrollView}>
+				<ScrollView
+					{...scrollPersistTaps}
+					contentContainerStyle={sharedStyles.containerScrollView}
+				>
 					<SafeAreaView>
 						<View style={sharedStyles.formContainer}>
 							<RCTextInput
-								inputRef={(e) => { this.name = e; }}
+								inputRef={(e) => {
+									this.name = e;
+								}}
 								label='Name'
 								value={name}
 								onChangeText={value => this.setState({ name: value })}
-								onSubmitEditing={() => { this.description.focus(); }}
+								onSubmitEditing={() => {
+									this.description.focus();
+								}}
 								error={nameError}
 							/>
 							<RCTextInput
-								inputRef={(e) => { this.description = e; }}
+								inputRef={(e) => {
+									this.description = e;
+								}}
 								label='Description'
 								value={description}
 								onChangeText={value => this.setState({ description: value })}
-								onSubmitEditing={() => { this.topic.focus(); }}
+								onSubmitEditing={() => {
+									this.topic.focus();
+								}}
 								inputProps={{ multiline: true }}
 							/>
 							<RCTextInput
-								inputRef={(e) => { this.topic = e; }}
+								inputRef={(e) => {
+									this.topic = e;
+								}}
 								label='Topic'
 								value={topic}
 								onChangeText={value => this.setState({ topic: value })}
-								onSubmitEditing={() => { this.announcement.focus(); }}
+								onSubmitEditing={() => {
+									this.announcement.focus();
+								}}
 								inputProps={{ multiline: true }}
 							/>
 							<RCTextInput
-								inputRef={(e) => { this.announcement = e; }}
+								inputRef={(e) => {
+									this.announcement = e;
+								}}
 								label='Announcement'
 								value={announcement}
 								onChangeText={value => this.setState({ announcement: value })}
-								onSubmitEditing={() => { this.joinCode.focus(); }}
+								onSubmitEditing={() => {
+									this.joinCode.focus();
+								}}
 								inputProps={{ multiline: true }}
 							/>
 							<RCTextInput
-								inputRef={(e) => { this.joinCode = e; }}
+								inputRef={(e) => {
+									this.joinCode = e;
+								}}
 								label='Password'
 								value={joinCode}
 								onChangeText={value => this.setState({ joinCode: value })}
@@ -317,30 +382,48 @@ export default class RoomInfoEditView extends LoggedView {
 								onValueChange={value => this.setState({ ro: value })}
 								disabled={!this.permissions[PERMISSION_SET_READONLY]}
 							/>
-							{ro &&
+							{ro && (
 								<SwitchContainer
 									value={reactWhenReadOnly}
 									leftLabelPrimary='No Reactions'
 									leftLabelSecondary='Reactions are disabled'
 									rightLabelPrimary='Allow Reactions'
 									rightLabelSecondary='Reactions are enabled'
-									onValueChange={value => this.setState({ reactWhenReadOnly: value })}
-									disabled={!this.permissions[PERMISSION_SET_REACT_WHEN_READONLY]}
+									onValueChange={value =>
+										this.setState({ reactWhenReadOnly: value })
+									}
+									disabled={
+										!this.permissions[PERMISSION_SET_REACT_WHEN_READONLY]
+									}
 								/>
-							}
+							)}
 							<TouchableOpacity
-								style={[sharedStyles.buttonContainer, !this.formIsChanged() && styles.buttonContainerDisabled]}
+								style={[
+									sharedStyles.buttonContainer,
+									!this.formIsChanged() && styles.buttonContainerDisabled
+								]}
 								onPress={this.submit}
 								disabled={!this.formIsChanged()}
 							>
-								<Text style={sharedStyles.button} accessibilityTraits='button'>SAVE</Text>
+								<Text style={sharedStyles.button} accessibilityTraits='button'>
+									SAVE
+								</Text>
 							</TouchableOpacity>
 							<View style={{ flexDirection: 'row' }}>
 								<TouchableOpacity
-									style={[sharedStyles.buttonContainer_inverted, styles.buttonInverted, { flex: 1 }]}
+									style={[
+										sharedStyles.buttonContainer_inverted,
+										styles.buttonInverted,
+										{ flex: 1 }
+									]}
 									onPress={this.reset}
 								>
-									<Text style={sharedStyles.button_inverted} accessibilityTraits='button'>RESET</Text>
+									<Text
+										style={sharedStyles.button_inverted}
+										accessibilityTraits='button'
+									>
+										RESET
+									</Text>
 								</TouchableOpacity>
 								<TouchableOpacity
 									style={[
@@ -352,8 +435,11 @@ export default class RoomInfoEditView extends LoggedView {
 									onPress={this.toggleArchive}
 									disabled={!this.hasArchivePermission()}
 								>
-									<Text style={[sharedStyles.button_inverted, styles.colorDanger]} accessibilityTraits='button'>
-										{ room.archived ? 'UNARCHIVE' : 'ARCHIVE' }
+									<Text
+										style={[sharedStyles.button_inverted, styles.colorDanger]}
+										accessibilityTraits='button'
+									>
+										{room.archived ? 'UNARCHIVE' : 'ARCHIVE'}
 									</Text>
 								</TouchableOpacity>
 							</View>
@@ -368,7 +454,12 @@ export default class RoomInfoEditView extends LoggedView {
 								onPress={this.delete}
 								disabled={!this.hasDeletePermission()}
 							>
-								<Text style={[sharedStyles.button_inverted, styles.colorDanger]} accessibilityTraits='button'>DELETE</Text>
+								<Text
+									style={[sharedStyles.button_inverted, styles.colorDanger]}
+									accessibilityTraits='button'
+								>
+									DELETE
+								</Text>
 							</TouchableOpacity>
 						</View>
 						<Loading visible={this.state.saving} />

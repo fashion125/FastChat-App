@@ -65,7 +65,6 @@ export function deleteFailure() {
 	};
 }
 
-
 export function editInit(message) {
 	return {
 		type: types.MESSAGES.EDIT_INIT,

@@ -1,7 +1,10 @@
 import { delay } from 'redux-saga';
 import { select, put, call, take, takeLatest } from 'redux-saga/effects';
 import { CREATE_CHANNEL, LOGIN } from '../actions/actionsTypes';
-import { createChannelSuccess, createChannelFailure } from '../actions/createChannel';
+import {
+	createChannelSuccess,
+	createChannelFailure
+} from '../actions/createChannel';
 import RocketChat from '../lib/rocketchat';
 import { goRoom } from '../containers/routes/NavigationService';
 

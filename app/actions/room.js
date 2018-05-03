@@ -1,6 +1,5 @@
 import * as types from './actionsTypes';
 
-
 export function removeUserTyping(username) {
 	return {
 		type: types.ROOM.REMOVE_USER_TYPING,

@@ -9,10 +9,7 @@ import styles from './styles';
 import CustomEmoji from '../EmojiPicker/CustomEmoji';
 
 const BlockCode = ({ node, state }) => (
-	<Text
-		key={state.key}
-		style={styles.codeStyle}
-	>
+	<Text key={state.key} style={styles.codeStyle}>
 		{node.content}
 	</Text>
 );
@@ -70,9 +67,7 @@ const defaultRules = {
 			type: 'custom',
 			key: state.key,
 			props: {
-				children: (
-					<BlockCode key={state.key} node={node} state={state} />
-				)
+				children: <BlockCode key={state.key} node={node} state={state} />
 			}
 		})
 	},
@@ -84,9 +79,7 @@ const defaultRules = {
 			type: 'custom',
 			key: state.key,
 			props: {
-				children: (
-					<BlockCode key={state.key} node={node} state={state} />
-				)
+				children: <BlockCode key={state.key} node={node} state={state} />
 			}
 		})
 	}
@@ -103,7 +96,12 @@ export default class Markdown extends React.Component {
 	}
 	render() {
 		const {
-			msg, customEmojis = {}, style, markdownStyle, customRules, renderInline
+			msg,
+			customEmojis = {},
+			style,
+			markdownStyle,
+			customRules,
+			renderInline
 		} = this.props;
 		if (!msg) {
 			return null;
@@ -133,7 +131,11 @@ export default class Markdown extends React.Component {
 							if (emojiExtension) {
 								const emoji = { extension: emojiExtension, content };
 								element.props.children = (
-									<CustomEmoji key={state.key} style={styles.customEmoji} emoji={emoji} />
+									<CustomEmoji
+										key={state.key}
+										style={styles.customEmoji}
+										emoji={emoji}
+									/>
 								);
 							}
 							return element;
@@ -143,7 +145,8 @@ export default class Markdown extends React.Component {
 					...customRules
 				}}
 				renderInline={renderInline}
-			>{m}
+			>
+				{m}
 			</EasyMarkdown>
 		);
 	}

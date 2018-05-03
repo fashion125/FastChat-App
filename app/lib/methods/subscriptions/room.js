@@ -4,11 +4,13 @@
 // import _buildMessage from '../helpers/buildMessage';
 // import protectedFunction from '../helpers/protectedFunction';
 
-const subscribe = (ddp, rid) => Promise.all([
-	ddp.subscribe('stream-room-messages', rid, false),
-	ddp.subscribe('stream-notify-room', `${ rid }/typing`, false)
-]);
-const unsubscribe = subscriptions => subscriptions.forEach(sub => sub.unsubscribe().catch(e => console.warn(e)));
+const subscribe = (ddp, rid) =>
+	Promise.all([
+		ddp.subscribe('stream-room-messages', rid, false),
+		ddp.subscribe('stream-notify-room', `${ rid }/typing`, false)
+	]);
+const unsubscribe = subscriptions =>
+	subscriptions.forEach(sub => sub.unsubscribe().catch(e => console.warn(e)));
 
 let timer = null;
 let promises;
@@ -50,14 +52,15 @@ export default async function subscribeRoom({ rid, t }) {
 		}, 5000);
 	};
 
-
 	logged = this.ddp.on('logged', () => {
 		clearTimeout(timer);
 		timer = false;
 		promises = subscribe(this.ddp, rid);
 	});
 
-	disconnected = this.ddp.on('disconnected', () => { loop(); });
+	disconnected = this.ddp.on('disconnected', () => {
+		loop();
+	});
 
 	if (!this.ddp.status) {
 		loop();

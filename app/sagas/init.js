@@ -13,11 +13,17 @@ const restore = function* restore() {
 			yield put(restoreToken(token));
 		}
 
-		const currentServer = yield call([AsyncStorage, 'getItem'], 'currentServer');
+		const currentServer = yield call(
+			[AsyncStorage, 'getItem'],
+			'currentServer'
+		);
 		if (currentServer) {
 			yield put(setServer(currentServer));
 
-			const login = yield call([AsyncStorage, 'getItem'], `${ RocketChat.TOKEN_KEY }-${ currentServer }`);
+			const login = yield call(
+				[AsyncStorage, 'getItem'],
+				`${ RocketChat.TOKEN_KEY }-${ currentServer }`
+			);
 			if (login && login.user) {
 				yield put(setUser(login.user));
 			}

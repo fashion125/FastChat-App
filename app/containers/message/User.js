@@ -39,7 +39,7 @@ export default class User extends React.PureComponent {
 		item: PropTypes.object.isRequired,
 		Message_TimeFormat: PropTypes.string.isRequired,
 		onPress: PropTypes.func
-	}
+	};
 
 	renderEdited = (item) => {
 		if (!item.editedBy) {
@@ -56,7 +56,7 @@ export default class User extends React.PureComponent {
 				/>
 			</View>
 		);
-	}
+	};
 
 	render() {
 		const { item } = this.props;
@@ -67,7 +67,9 @@ export default class User extends React.PureComponent {
 		}
 
 		const username = item.alias || item.u.username;
-		const aliasUsername = item.alias ? (<Text style={styles.alias}>@{item.u.username}</Text>) : null;
+		const aliasUsername = item.alias ? (
+			<Text style={styles.alias}>@{item.u.username}</Text>
+		) : null;
 		const time = moment(item.ts).format(this.props.Message_TimeFormat);
 
 		return (

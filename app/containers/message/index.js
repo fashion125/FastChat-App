@@ -1,6 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, Vibration, ViewPropTypes } from 'react-native';
+import {
+	View,
+	Text,
+	TouchableOpacity,
+	Vibration,
+	ViewPropTypes
+} from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
@@ -18,7 +24,11 @@ import Reply from './Reply';
 import ReactionsModal from './ReactionsModal';
 import Emoji from './Emoji';
 import styles from './styles';
-import { actionsShow, errorActionsShow, toggleReactionPicker } from '../../actions/messages';
+import {
+	actionsShow,
+	errorActionsShow,
+	toggleReactionPicker
+} from '../../actions/messages';
 import messagesStatus from '../../constants/messagesStatus';
 import Touch from '../../utils/touch';
 
@@ -59,17 +69,21 @@ const getInfoMessage = ({
 	return '';
 };
 
-@connect(state => ({
-	message: state.messages.message,
-	editing: state.messages.editing,
-	customEmojis: state.customEmojis,
-	Message_TimeFormat: state.settings.Message_TimeFormat,
-	Message_GroupingPeriod: state.settings.Message_GroupingPeriod
-}), dispatch => ({
-	actionsShow: actionMessage => dispatch(actionsShow(actionMessage)),
-	errorActionsShow: actionMessage => dispatch(errorActionsShow(actionMessage)),
-	toggleReactionPicker: message => dispatch(toggleReactionPicker(message))
-}))
+@connect(
+	state => ({
+		message: state.messages.message,
+		editing: state.messages.editing,
+		customEmojis: state.customEmojis,
+		Message_TimeFormat: state.settings.Message_TimeFormat,
+		Message_GroupingPeriod: state.settings.Message_GroupingPeriod
+	}),
+	dispatch => ({
+		actionsShow: actionMessage => dispatch(actionsShow(actionMessage)),
+		errorActionsShow: actionMessage =>
+			dispatch(errorActionsShow(actionMessage)),
+		toggleReactionPicker: message => dispatch(toggleReactionPicker(message))
+	})
+)
 export default class Message extends React.Component {
 	static propTypes = {
 		status: PropTypes.any,
@@ -88,13 +102,13 @@ export default class Message extends React.Component {
 		onLongPress: PropTypes.func,
 		_updatedAt: PropTypes.instanceOf(Date),
 		archived: PropTypes.bool
-	}
+	};
 
 	static defaultProps = {
 		onLongPress: () => {},
 		_updatedAt: new Date(),
 		archived: false
-	}
+	};
 
 	constructor(props) {
 		super(props);
@@ -116,24 +130,26 @@ export default class Message extends React.Component {
 		if (!equal(this.props.reactions, nextProps.reactions)) {
 			return true;
 		}
-		return this.props._updatedAt.toGMTString() !== nextProps._updatedAt.toGMTString();
+		return (
+			this.props._updatedAt.toGMTString() !== nextProps._updatedAt.toGMTString()
+		);
 	}
 
 	onPress = () => {
 		KeyboardUtils.dismiss();
-	}
+	};
 
 	onLongPress = () => {
 		this.props.onLongPress(this.parseMessage());
-	}
+	};
 
 	onErrorPress = () => {
 		this.props.errorActionsShow(this.parseMessage());
-	}
+	};
 
 	onReactionPress = (emoji) => {
 		this.props.onReactionPress(emoji, this.props.item._id);
-	}
+	};
 	onClose() {
 		this.setState({ reactionsModal: false });
 	}
@@ -174,7 +190,10 @@ export default class Message extends React.Component {
 	}
 
 	isTemp() {
-		return this.props.item.status === messagesStatus.TEMP || this.props.item.status === messagesStatus.ERROR;
+		return (
+			this.props.item.status === messagesStatus.TEMP ||
+			this.props.item.status === messagesStatus.ERROR
+		);
 	}
 
 	hasError() {
@@ -184,13 +203,14 @@ export default class Message extends React.Component {
 	renderHeader = (username) => {
 		const { item, previousItem } = this.props;
 
-		if (previousItem && (
-			(previousItem.ts.toDateString() === item.ts.toDateString()) &&
-			(previousItem.u.username === item.u.username) &&
-			!(previousItem.groupable === false || item.groupable === false) &&
-			(previousItem.status === item.status) &&
-			(item.ts - previousItem.ts < this.props.Message_GroupingPeriod * 1000)
-		)) {
+		if (
+			previousItem &&
+			(previousItem.ts.toDateString() === item.ts.toDateString() &&
+				previousItem.u.username === item.u.username &&
+				!(previousItem.groupable === false || item.groupable === false) &&
+				previousItem.status === item.status &&
+				item.ts - previousItem.ts < this.props.Message_GroupingPeriod * 1000)
+		) {
 			return null;
 		}
 
@@ -209,11 +229,13 @@ export default class Message extends React.Component {
 				/>
 			</View>
 		);
-	}
+	};
 
 	renderContent() {
 		if (this.isInfoMessage()) {
-			return <Text style={styles.textInfo}>{getInfoMessage(this.props.item)}</Text>;
+			return (
+				<Text style={styles.textInfo}>{getInfoMessage(this.props.item)}</Text>
+			);
 		}
 		const { item } = this.props;
 		return <Markdown msg={item.msg} />;
@@ -245,9 +267,7 @@ export default class Message extends React.Component {
 			return null;
 		}
 
-		return urls.map(url => (
-			<Url url={url} key={url.url} />
-		));
+		return urls.map(url => <Url url={url} key={url.url} />);
 	};
 
 	renderError = () => {
@@ -256,13 +276,19 @@ export default class Message extends React.Component {
 		}
 		return (
 			<TouchableOpacity onPress={this.onErrorPress}>
-				<Icon name='error-outline' color='red' size={20} style={styles.errorIcon} />
+				<Icon
+					name='error-outline'
+					color='red'
+					size={20}
+					style={styles.errorIcon}
+				/>
 			</TouchableOpacity>
 		);
-	}
+	};
 
 	renderReaction = (reaction) => {
-		const reacted = reaction.usernames.findIndex(item => item.value === this.props.user.username) !== -1;
+		const reacted =
+			reaction.usernames.findIndex(item => item.value === this.props.user.username) !== -1;
 		const reactedContainerStyle = reacted && styles.reactedContainer;
 		const reactedCount = reacted && styles.reactedCountText;
 		return (
@@ -277,11 +303,13 @@ export default class Message extends React.Component {
 						standardEmojiStyle={styles.reactionEmoji}
 						customEmojiStyle={styles.reactionCustomEmoji}
 					/>
-					<Text style={[styles.reactionCount, reactedCount]}>{ reaction.usernames.length }</Text>
+					<Text style={[styles.reactionCount, reactedCount]}>
+						{reaction.usernames.length}
+					</Text>
 				</View>
 			</TouchableOpacity>
 		);
-	}
+	};
 
 	renderReactions() {
 		if (this.props.item.reactions.length === 0) {
@@ -329,14 +357,14 @@ export default class Message extends React.Component {
 							{this.renderReactions()}
 						</View>
 					</View>
-					{this.state.reactionsModal &&
+					{this.state.reactionsModal && (
 						<ReactionsModal
 							isVisible={this.state.reactionsModal}
 							onClose={this.onClose}
 							reactions={item.reactions}
 							user={this.props.user}
 						/>
-					}
+					)}
 				</View>
 			</Touch>
 		);

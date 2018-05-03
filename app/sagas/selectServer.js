@@ -4,7 +4,12 @@ import { AsyncStorage } from 'react-native';
 import { SERVER } from '../actions/actionsTypes';
 import * as actions from '../actions';
 import { connectRequest } from '../actions/connect';
-import { serverSuccess, serverFailure, serverRequest, setServer } from '../actions/server';
+import {
+	serverSuccess,
+	serverFailure,
+	serverRequest,
+	setServer
+} from '../actions/server';
 import { setRoles } from '../actions/roles';
 import RocketChat from '../lib/rocketchat';
 import database from '../lib/realm';
@@ -59,7 +64,11 @@ const addServer = function* addServer({ server }) {
 	});
 	if (!error) {
 		database.databases.serversDB.write(() => {
-			database.databases.serversDB.create('servers', { id: server, current: false }, true);
+			database.databases.serversDB.create(
+				'servers',
+				{ id: server, current: false },
+				true
+			);
 		});
 		yield put(setServer(server));
 	}

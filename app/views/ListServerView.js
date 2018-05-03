@@ -3,7 +3,13 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 // import Zeroconf from 'react-native-zeroconf';
-import { View, Text, SectionList, StyleSheet, SafeAreaView } from 'react-native';
+import {
+	View,
+	Text,
+	SectionList,
+	StyleSheet,
+	SafeAreaView
+} from 'react-native';
 import { connect } from 'react-redux';
 
 import LoggedView from './View';
@@ -63,14 +69,16 @@ const styles = StyleSheet.create({
 
 // const zeroconf = new Zeroconf();
 
-
-@connect(state => ({
-	server: state.server.server,
-	login: state.login,
-	connected: state.meteor.connected
-}), dispatch => ({
-	selectServer: server => dispatch(setServer(server))
-}))
+@connect(
+	state => ({
+		server: state.server.server,
+		login: state.login,
+		connected: state.meteor.connected
+	}),
+	dispatch => ({
+		selectServer: server => dispatch(setServer(server))
+	})
+)
 export default class ListServerView extends LoggedView {
 	static propTypes = {
 		navigation: PropTypes.object.isRequired,
@@ -78,7 +86,7 @@ export default class ListServerView extends LoggedView {
 		selectServer: PropTypes.func.isRequired,
 		connected: PropTypes.bool.isRequired,
 		server: PropTypes.string
-	}
+	};
 
 	constructor(props) {
 		super('ListServerView', props);
@@ -116,13 +124,16 @@ export default class ListServerView extends LoggedView {
 	}
 
 	openLogin = () => {
-		this.props.navigation.navigate({ key: 'LoginSignup', routeName: 'LoginSignup' });
-	}
+		this.props.navigation.navigate({
+			key: 'LoginSignup',
+			routeName: 'LoginSignup'
+		});
+	};
 
 	selectAndNavigateTo = (server) => {
 		this.props.selectServer(server);
 		this.openLogin();
-	}
+	};
 
 	jumpToSelectedServer() {
 		if (this.props.server && !this.props.login.isRegistering) {
@@ -134,13 +145,15 @@ export default class ListServerView extends LoggedView {
 
 	onPressItem = (item) => {
 		this.selectAndNavigateTo(item.id);
-	}
+	};
 
 	getState = () => {
-		const sections = [{
-			title: 'My servers',
-			data: this.data
-		}];
+		const sections = [
+			{
+				title: 'My servers',
+				data: this.data
+			}
+		];
 		//
 		// this.state.nearBy = zeroconf.getServices();
 		// if (this.state.nearBy) {
@@ -168,19 +181,18 @@ export default class ListServerView extends LoggedView {
 
 	updateState = () => {
 		this.setState(this.getState());
-	}
+	};
 
 	renderItem = ({ item }) => (
 		<Touch
 			underlayColor='#ccc'
 			accessibilityTraits='button'
-			onPress={() => { this.onPressItem(item); }}
+			onPress={() => {
+				this.onPressItem(item);
+			}}
 		>
 			<View style={styles.serverItem}>
-				<Text
-					style={[styles.listItem]}
-					adjustsFontSizeToFit
-				>
+				<Text style={[styles.listItem]} adjustsFontSizeToFit>
 					{item.id}
 				</Text>
 				<Fade visible={this.props.server === item.id}>
@@ -195,14 +207,11 @@ export default class ListServerView extends LoggedView {
 		</Touch>
 	);
 
-
 	renderSectionHeader = ({ section }) => (
 		<Text style={styles.headerStyle}>{section.title}</Text>
 	);
 
-	renderSeparator = () => (
-		<View style={styles.separator} />
-	);
+	renderSeparator = () => <View style={styles.separator} />;
 
 	render() {
 		return (

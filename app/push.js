@@ -13,7 +13,6 @@ const handleNotification = (notification) => {
 	return rid && goRoom({ rid, name: type === 'd' ? sender.username : name });
 };
 PushNotification.configure({
-
 	// (optional) Called when Token is generated (iOS and Android)
 	async onRegister({ token }) {
 		AsyncStorage.setItem('pushId', token);
@@ -37,9 +36,9 @@ PushNotification.configure({
 	popInitialNotification: true,
 
 	/**
-     * (optional) default: true
-     * - Specified if permissions (ios) and token (android and ios) will requested or not,
-     * - if not, you must call PushNotificationsHandler.requestPermissions() later
-     */
+	 * (optional) default: true
+	 * - Specified if permissions (ios) and token (android and ios) will requested or not,
+	 * - if not, you must call PushNotificationsHandler.requestPermissions() later
+	 */
 	requestPermissions: true
 });

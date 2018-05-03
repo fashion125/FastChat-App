@@ -36,7 +36,13 @@ export default class Avatar extends React.PureComponent {
 	};
 	render() {
 		const {
-			text = '', size = 25, baseUrl, borderRadius = 2, style, avatar, type = 'd'
+			text = '',
+			size = 25,
+			baseUrl,
+			borderRadius = 2,
+			style,
+			avatar,
+			type = 'd'
 		} = this.props;
 		const { initials, color } = avatarInitialsAndColor(`${ text }`);
 
@@ -60,17 +66,20 @@ export default class Avatar extends React.PureComponent {
 		if (type === 'd') {
 			const uri = avatar || `${ baseUrl }/avatar/${ text }`;
 			const image = (avatar || baseUrl) && (
-				<CachedImage
-					style={[styles.avatar, avatarStyle]}
-					source={{ uri }}
-				/>
+				<CachedImage style={[styles.avatar, avatarStyle]} source={{ uri }} />
 			);
 			return (
 				<View style={[styles.iconContainer, iconContainerStyle, style]}>
-					<Text style={[styles.avatarInitials, avatarInitialsStyle]} allowFontScaling={false}>{initials}</Text>
+					<Text
+						style={[styles.avatarInitials, avatarInitialsStyle]}
+						allowFontScaling={false}
+					>
+						{initials}
+					</Text>
 					{image}
 					{this.props.children}
-				</View>);
+				</View>
+			);
 		}
 
 		const icon = {
@@ -81,7 +90,10 @@ export default class Avatar extends React.PureComponent {
 
 		return (
 			<View style={[styles.iconContainer, iconContainerStyle, style]}>
-				<MaterialCommunityIcons name={icon} style={[styles.avatarInitials, avatarInitialsStyle]} />
+				<MaterialCommunityIcons
+					name={icon}
+					style={[styles.avatarInitials, avatarInitialsStyle]}
+				/>
 			</View>
 		);
 	}

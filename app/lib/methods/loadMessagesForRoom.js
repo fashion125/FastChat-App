@@ -4,16 +4,20 @@ import { get } from './helpers/rest';
 import buildMessage from './helpers/buildMessage';
 import database from '../realm';
 
-
 // TODO: api fix
 const types = {
-	c: 'channels', d: 'im', p: 'groups'
+	c: 'channels',
+	d: 'im',
+	p: 'groups'
 };
 
 async function loadMessagesForRoomRest({ rid: roomId, latest, t }) {
 	const { token, id } = this.ddp._login;
 	const server = this.ddp.url.replace('ws', 'http');
-	const data = await get({ token, id, server }, `${ types[t] }.history`, { roomId, latest });
+	const data = await get({ token, id, server }, `${ types[t] }.history`, {
+		roomId,
+		latest
+	});
 	return data.messages;
 }
 
@@ -52,11 +56,14 @@ export default async function loadMessagesForRoom(...args) {
 
 	return new Promise(async(resolve) => {
 		// eslint-disable-next-line
-		const data = (await (false && this.ddp.status ? loadMessagesForRoomDDP.call(this, ...args) : loadMessagesForRoomRest.call(this, ...args))).map(buildMessage);
+		const data = (await (false && this.ddp.status
+			? loadMessagesForRoomDDP.call(this, ...args)
+			: loadMessagesForRoomRest.call(this, ...args))).map(buildMessage);
 		if (data) {
 			InteractionManager.runAfterInteractions(() => {
 				try {
-					db.write(() => data.forEach(message => db.create('messages', message, true)));
+					db.write(() =>
+						data.forEach(message => db.create('messages', message, true)));
 					resolve(data);
 				} catch (e) {
 					console.warn('loadMessagesForRoom', e);

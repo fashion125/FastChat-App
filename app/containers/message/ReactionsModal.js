@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableWithoutFeedback, FlatList, StyleSheet } from 'react-native';
+import {
+	View,
+	Text,
+	TouchableWithoutFeedback,
+	FlatList,
+	StyleSheet
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -64,11 +70,14 @@ export default class ReactionsModal extends React.PureComponent {
 		reactions: PropTypes.object.isRequired,
 		user: PropTypes.object.isRequired,
 		customEmojis: PropTypes.object.isRequired
-	}
+	};
 	renderItem = (item) => {
 		const count = item.usernames.length;
-		let usernames = item.usernames.slice(0, 3)
-			.map(username => (username.value === this.props.user.username ? 'you' : username.value)).join(', ');
+		let usernames = item.usernames
+			.slice(0, 3)
+			.map(username =>
+				(username.value === this.props.user.username ? 'you' : username.value))
+			.join(', ');
 		if (count > 3) {
 			usernames = `${ usernames } and more ${ count - 3 }`;
 		} else {
@@ -88,16 +97,14 @@ export default class ReactionsModal extends React.PureComponent {
 					<Text style={styles.reactCount}>
 						{count === 1 ? '1 person' : `${ count } people`} reacted
 					</Text>
-					<Text style={styles.peopleReacted}>{ usernames }</Text>
+					<Text style={styles.peopleReacted}>{usernames}</Text>
 				</View>
 			</View>
 		);
-	}
+	};
 
 	render() {
-		const {
-			isVisible, onClose, reactions
-		} = this.props;
+		const { isVisible, onClose, reactions } = this.props;
 		return (
 			<Modal
 				isVisible={isVisible}

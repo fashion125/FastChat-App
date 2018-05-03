@@ -10,7 +10,7 @@ export default class Fade extends React.Component {
 			PropTypes.arrayOf(PropTypes.node),
 			PropTypes.node
 		])
-	}
+	};
 
 	constructor(props) {
 		super(props);
@@ -53,7 +53,10 @@ export default class Fade extends React.Component {
 
 		const combinedStyle = [containerStyle, style];
 		return (
-			<Animated.View style={this.state.visible ? combinedStyle : containerStyle} {...rest}>
+			<Animated.View
+				style={this.state.visible ? combinedStyle : containerStyle}
+				{...rest}
+			>
 				<Text>{this.state.visible ? children : null}</Text>
 			</Animated.View>
 		);

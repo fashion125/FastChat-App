@@ -20,16 +20,15 @@ const styles = StyleSheet.create({
 export default class CloseModalButton extends React.PureComponent {
 	static propTypes = {
 		navigation: PropTypes.object.isRequired
-	}
+	};
 
 	render() {
 		return (
-			<TouchableOpacity onPress={() => this.props.navigation.dispatch(NavigationActions.back())} style={styles.button}>
-				<Icon
-					style={styles.icon}
-					name='close'
-					size={25}
-				/>
+			<TouchableOpacity
+				onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
+				style={styles.button}
+			>
+				<Icon style={styles.icon} name='close' size={25} />
 			</TouchableOpacity>
 		);
 	}

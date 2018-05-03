@@ -19,39 +19,30 @@ const styles = StyleSheet.create({
 export default class Loading extends React.PureComponent {
 	static propTypes = {
 		visible: PropTypes.bool.isRequired
-	}
+	};
 
 	state = {
 		scale: new Animated.Value(1),
 		opacity: new Animated.Value(0)
-	}
+	};
 
 	componentDidMount() {
-		this.opacityAnimation = Animated.timing(
-			this.state.opacity,
-			{
+		this.opacityAnimation = Animated.timing(this.state.opacity, {
+			toValue: 1,
+			duration: 1000,
+			useNativeDriver: true
+		});
+		this.scaleAnimation = Animated.loop(Animated.sequence([
+			Animated.timing(this.state.scale, {
+				toValue: 0,
+				duration: 1000,
+				useNativeDriver: true
+			}),
+			Animated.timing(this.state.scale, {
 				toValue: 1,
 				duration: 1000,
 				useNativeDriver: true
-			}
-		);
-		this.scaleAnimation = Animated.loop(Animated.sequence([
-			Animated.timing(
-				this.state.scale,
-				{
-					toValue: 0,
-					duration: 1000,
-					useNativeDriver: true
-				}
-			),
-			Animated.timing(
-				this.state.scale,
-				{
-					toValue: 1,
-					duration: 1000,
-					useNativeDriver: true
-				}
-			)
+			})
 		]));
 
 		if (this.props.visible) {
@@ -81,20 +72,21 @@ export default class Loading extends React.PureComponent {
 			outputRange: [1, 1.1, 1]
 		});
 		return (
-			<Modal
-				visible={this.props.visible}
-				transparent
-				onRequestClose={() => {}}
-			>
+			<Modal visible={this.props.visible} transparent onRequestClose={() => {}}>
 				<View style={styles.container}>
 					<Animated.Image
 						source={require('../static/images/logo.png')}
-						style={[styles.image, {
-							opacity: this.state.opacity,
-							transform: [{
-								scale
-							}]
-						}]}
+						style={[
+							styles.image,
+							{
+								opacity: this.state.opacity,
+								transform: [
+									{
+										scale
+									}
+								]
+							}
+						]}
 					/>
 				</View>
 			</Modal>

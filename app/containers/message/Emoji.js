@@ -17,14 +17,23 @@ export default class Emoji extends React.PureComponent {
 	};
 	render() {
 		const {
-			content, standardEmojiStyle, customEmojiStyle, customEmojis
+			content,
+			standardEmojiStyle,
+			customEmojiStyle,
+			customEmojis
 		} = this.props;
 		const parsedContent = content.replace(/^:|:$/g, '');
 		const emojiExtension = customEmojis[parsedContent];
 		if (emojiExtension) {
 			const emoji = { extension: emojiExtension, content: parsedContent };
-			return <CustomEmoji key={content} style={customEmojiStyle} emoji={emoji} />;
+			return (
+				<CustomEmoji key={content} style={customEmojiStyle} emoji={emoji} />
+			);
 		}
-		return <Text style={standardEmojiStyle}>{ emojify(`${ content }`, { output: 'unicode' }) }</Text>;
+		return (
+			<Text style={standardEmojiStyle}>
+				{emojify(`${ content }`, { output: 'unicode' })}
+			</Text>
+		);
 	}
 }

@@ -37,14 +37,12 @@ const styles = StyleSheet.create({
 export default class Header extends React.PureComponent {
 	static propTypes = {
 		subview: PropTypes.object.isRequired
-	}
+	};
 
 	render() {
 		return (
 			<SafeAreaView forceInset={{ bottom: 'never' }} style={styles.container}>
-				<View style={styles.appBar}>
-					{this.props.subview}
-				</View>
+				<View style={styles.appBar}>{this.props.subview}</View>
 			</SafeAreaView>
 		);
 	}

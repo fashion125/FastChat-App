@@ -62,7 +62,10 @@ const forgotPasswordCall = args => RocketChat.forgotPassword(args);
 const saveToken = function* saveToken() {
 	const [server, user] = yield all([select(getServer), select(getUser)]);
 	yield AsyncStorage.setItem(RocketChat.TOKEN_KEY, user.token);
-	yield AsyncStorage.setItem(`${ RocketChat.TOKEN_KEY }-${ server }`, JSON.stringify(user));
+	yield AsyncStorage.setItem(
+		`${ RocketChat.TOKEN_KEY }-${ server }`,
+		JSON.stringify(user)
+	);
 	const token = yield AsyncStorage.getItem('pushId');
 	if (token) {
 		yield RocketChat.registerPushToken(user.user.id, token);
@@ -113,11 +116,15 @@ const handleRegisterSuccess = function* handleRegisterSuccess({ credentials }) {
 	}
 };
 
-const handleSetUsernameSubmit = function* handleSetUsernameSubmit({ credentials }) {
+const handleSetUsernameSubmit = function* handleSetUsernameSubmit({
+	credentials
+}) {
 	yield put(setUsernameRequest(credentials));
 };
 
-const handleSetUsernameRequest = function* handleSetUsernameRequest({ credentials }) {
+const handleSetUsernameRequest = function* handleSetUsernameRequest({
+	credentials
+}) {
 	try {
 		yield call(setUsernameCall, { credentials });
 		yield put(setUsernameSuccess());
@@ -138,7 +145,9 @@ const handleRegisterIncomplete = function* handleRegisterIncomplete() {
 	yield call(NavigationService.navigate, 'Register');
 };
 
-const handleForgotPasswordRequest = function* handleForgotPasswordRequest({ email }) {
+const handleForgotPasswordRequest = function* handleForgotPasswordRequest({
+	email
+}) {
 	try {
 		yield call(forgotPasswordCall, email);
 		yield put(forgotPasswordSuccess());

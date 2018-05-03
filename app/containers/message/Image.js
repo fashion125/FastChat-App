@@ -29,7 +29,7 @@ export default class extends React.PureComponent {
 		file: PropTypes.object.isRequired,
 		baseUrl: PropTypes.string.isRequired,
 		user: PropTypes.object.isRequired
-	}
+	};
 
 	state = { modalVisible: false };
 
@@ -48,28 +48,25 @@ export default class extends React.PureComponent {
 
 	render() {
 		const { baseUrl, file, user } = this.props;
-		const img = `${ baseUrl }${ file.image_url }?rc_uid=${ user.id }&rc_token=${ user.token }`;
-		return (
-			[
-				<TouchableOpacity
-					key='image'
-					onPress={() => this._onPressButton()}
-					style={styles.button}
-				>
-					<CachedImage
-						style={styles.image}
-						source={{ uri: encodeURI(img) }}
-					/>
-					{this.getDescription()}
-				</TouchableOpacity>,
-				<PhotoModal
-					key='modal'
-					title={this.props.file.title}
-					image={img}
-					isVisible={this.state.modalVisible}
-					onClose={() => this.setState({ modalVisible: false })}
-				/>
-			]
-		);
+		const img = `${ baseUrl }${ file.image_url }?rc_uid=${ user.id }&rc_token=${
+			user.token
+		}`;
+		return [
+			<TouchableOpacity
+				key='image'
+				onPress={() => this._onPressButton()}
+				style={styles.button}
+			>
+				<CachedImage style={styles.image} source={{ uri: encodeURI(img) }} />
+				{this.getDescription()}
+			</TouchableOpacity>,
+			<PhotoModal
+				key='modal'
+				title={this.props.file.title}
+				image={img}
+				isVisible={this.state.modalVisible}
+				onClose={() => this.setState({ modalVisible: false })}
+			/>
+		];
 	}
 }

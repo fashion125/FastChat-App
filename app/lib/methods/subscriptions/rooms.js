@@ -3,7 +3,11 @@ import { merge } from '../helpers/mergeSubscriptionsRooms';
 
 export default async function subscribeRooms(id) {
 	const subscriptions = Promise.all([
-		this.ddp.subscribe('stream-notify-user', `${ id }/subscriptions-changed`, false),
+		this.ddp.subscribe(
+			'stream-notify-user',
+			`${ id }/subscriptions-changed`,
+			false
+		),
 		this.ddp.subscribe('stream-notify-user', `${ id }/rooms-changed`, false),
 		this.ddp.subscribe('stream-notify-user', `${ id }/message`, false)
 	]);
@@ -34,7 +38,9 @@ export default async function subscribeRooms(id) {
 		timer = true;
 	});
 
-	this.ddp.on('disconnected', () => { loop(); });
+	this.ddp.on('disconnected', () => {
+		loop();
+	});
 
 	this.ddp.on('stream-notify-user', (ddpMessage) => {
 		const [type, data] = ddpMessage.fields.args;
@@ -46,7 +52,9 @@ export default async function subscribeRooms(id) {
 			});
 		}
 		if (/rooms/.test(ev) && type === 'updated') {
-			const [sub] = database.objects('subscriptions').filtered('rid == $0', data._id);
+			const [sub] = database
+				.objects('subscriptions')
+				.filtered('rid == $0', data._id);
 			database.write(() => {
 				merge(sub, data);
 			});

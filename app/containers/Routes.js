@@ -15,16 +15,20 @@ import * as NavigationService from './routes/NavigationService';
 		app: state.app,
 		background: state.app.background
 	}),
-	dispatch => bindActionCreators({
-		appInit
-	}, dispatch)
+	dispatch =>
+		bindActionCreators(
+			{
+				appInit
+			},
+			dispatch
+		)
 )
 export default class Routes extends React.Component {
 	static propTypes = {
 		login: PropTypes.object.isRequired,
 		app: PropTypes.object.isRequired,
 		appInit: PropTypes.func.isRequired
-	}
+	};
 
 	componentDidMount() {
 		if (this.props.app.ready) {
@@ -51,8 +55,8 @@ export default class Routes extends React.Component {
 		}
 
 		if (!login.token || login.isRegistering) {
-			return (<PublicRoutes ref={nav => this.navigator = nav} />);
+			return <PublicRoutes ref={nav => (this.navigator = nav)} />;
 		}
-		return (<AuthRoutes ref={nav => this.navigator = nav} />);
+		return <AuthRoutes ref={nav => (this.navigator = nav)} />;
 	}
 }

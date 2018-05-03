@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ScrollView, Text, View, StyleSheet, FlatList, TouchableHighlight } from 'react-native';
+import {
+	ScrollView,
+	Text,
+	View,
+	StyleSheet,
+	FlatList,
+	TouchableHighlight
+} from 'react-native';
 import { connect } from 'react-redux';
 
 import database from '../lib/realm';
@@ -36,13 +43,16 @@ const styles = StyleSheet.create({
 	}
 });
 const keyExtractor = item => item.id;
-@connect(state => ({
-	server: state.server.server
-}), dispatch => ({
-	selectServer: server => dispatch(setServer(server)),
-	logout: () => dispatch(logout()),
-	gotoAddServer: () => dispatch(gotoAddServer())
-}))
+@connect(
+	state => ({
+		server: state.server.server
+	}),
+	dispatch => ({
+		selectServer: server => dispatch(setServer(server)),
+		logout: () => dispatch(logout()),
+		gotoAddServer: () => dispatch(gotoAddServer())
+	})
+)
 export default class Sidebar extends Component {
 	static propTypes = {
 		server: PropTypes.string.isRequired,
@@ -50,7 +60,7 @@ export default class Sidebar extends Component {
 		navigation: PropTypes.object.isRequired,
 		logout: PropTypes.func.isRequired,
 		gotoAddServer: PropTypes.func.isRequired
-	}
+	};
 
 	constructor(props) {
 		super(props);
@@ -67,36 +77,46 @@ export default class Sidebar extends Component {
 	}
 
 	onItemPress = ({ route, focused }) => {
-		this.props.navigation.navigate({ key: 'DrawerClose', routeName: 'DrawerClose' });
+		this.props.navigation.navigate({
+			key: 'DrawerClose',
+			routeName: 'DrawerClose'
+		});
 		if (!focused) {
 			this.props.navigation.navigate(route.routeName, undefined);
 		}
-	}
+	};
 
 	onPressItem = (item) => {
 		this.props.selectServer(item.id);
-		this.props.navigation.navigate({ key: 'DrawerClose', routeName: 'DrawerClose' });
-	}
+		this.props.navigation.navigate({
+			key: 'DrawerClose',
+			routeName: 'DrawerClose'
+		});
+	};
 
 	getState = () => ({
 		servers: database.databases.serversDB.objects('servers')
-	})
+	});
 
 	updateState = () => {
 		this.setState(this.getState());
-	}
+	};
 
 	renderItem = ({ item, separators }) => (
-
 		<TouchableHighlight
 			onShowUnderlay={separators.highlight}
 			onHideUnderlay={separators.unhighlight}
-			onPress={() => { this.onPressItem(item); }}
+			onPress={() => {
+				this.onPressItem(item);
+			}}
 		>
-			<View style={[styles.serverItem, (item.id === this.props.server ? styles.selectedServer : null)]}>
-				<Text>
-					{item.id}
-				</Text>
+			<View
+				style={[
+					styles.serverItem,
+					item.id === this.props.server ? styles.selectedServer : null
+				]}
+			>
+				<Text>{item.id}</Text>
 			</View>
 		</TouchableHighlight>
 	);
@@ -111,21 +131,21 @@ export default class Sidebar extends Component {
 						keyExtractor={keyExtractor}
 					/>
 					<TouchableHighlight
-						onPress={() => { this.props.logout(); }}
+						onPress={() => {
+							this.props.logout();
+						}}
 					>
 						<View style={styles.serverItem}>
-							<Text>
-								Logout
-							</Text>
+							<Text>Logout</Text>
 						</View>
 					</TouchableHighlight>
 					<TouchableHighlight
-						onPress={() => { this.props.gotoAddServer(); }}
+						onPress={() => {
+							this.props.gotoAddServer();
+						}}
 					>
 						<View style={styles.serverItem}>
-							<Text>
-								Add Server
-							</Text>
+							<Text>Add Server</Text>
 						</View>
 					</TouchableHighlight>
 				</View>

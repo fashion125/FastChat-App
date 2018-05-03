@@ -34,7 +34,7 @@ export default class RoomInfoView extends LoggedView {
 		activeUsers: PropTypes.object,
 		Message_TimeFormat: PropTypes.string,
 		roles: PropTypes.object
-	}
+	};
 
 	static navigationOptions = ({ navigation }) => {
 		const params = navigation.state.params || {};
@@ -44,7 +44,13 @@ export default class RoomInfoView extends LoggedView {
 		return {
 			headerRight: (
 				<Touch
-					onPress={() => navigation.navigate({ key: 'RoomInfoEdit', routeName: 'RoomInfoEdit', params: { rid: navigation.state.params.rid } })}
+					onPress={() =>
+						navigation.navigate({
+							key: 'RoomInfoEdit',
+							routeName: 'RoomInfoEdit',
+							params: { rid: navigation.state.params.rid }
+						})
+					}
 					underlayColor='#ffffff'
 					activeOpacity={0.5}
 					accessibilityLabel='edit'
@@ -79,7 +85,10 @@ export default class RoomInfoView extends LoggedView {
 		// get user of room
 		if (this.state.room.t === 'd') {
 			try {
-				const roomUser = await RocketChat.getRoomMember(this.state.room.rid, this.props.user.id);
+				const roomUser = await RocketChat.getRoomMember(
+					this.state.room.rid,
+					this.props.user.id
+				);
 				this.setState({ roomUser });
 				const username = this.state.room.name;
 
@@ -101,8 +110,13 @@ export default class RoomInfoView extends LoggedView {
 				console.warn('RoomInfoView', error);
 			}
 		} else {
-			const permissions = RocketChat.hasPermission([PERMISSION_EDIT_ROOM], this.state.room.rid);
-			this.props.navigation.setParams({ hasEditPermission: permissions[PERMISSION_EDIT_ROOM] });
+			const permissions = RocketChat.hasPermission(
+				[PERMISSION_EDIT_ROOM],
+				this.state.room.rid
+			);
+			this.props.navigation.setParams({
+				hasEditPermission: permissions[PERMISSION_EDIT_ROOM]
+			});
 		}
 	}
 
@@ -114,7 +128,7 @@ export default class RoomInfoView extends LoggedView {
 	getFullUserData = async(username) => {
 		const result = await RocketChat.subscribe('fullUserData', username);
 		this.sub = result;
-	}
+	};
 
 	getRoomTitle = room => (room.t === 'd' ? room.fname : room.name);
 
@@ -123,28 +137,32 @@ export default class RoomInfoView extends LoggedView {
 	updateRoom = async() => {
 		const [room] = this.rooms;
 		this.setState({ room });
-	}
+	};
 	// TODO: translate
 	renderItem = (key, room) => (
 		<View style={styles.item}>
 			<Text style={styles.itemLabel}>{camelize(key)}</Text>
-			<Text style={[styles.itemContent, !room[key] && styles.itemContent__empty]}>{ room[key] ? room[key] : `No ${ key } provided.` }</Text>
+			<Text
+				style={[styles.itemContent, !room[key] && styles.itemContent__empty]}
+			>
+				{room[key] ? room[key] : `No ${ key } provided.`}
+			</Text>
 		</View>
 	);
 
-	renderRoles = () => (
-		this.state.roles.length > 0 &&
-		<View style={styles.item}>
-			<Text style={styles.itemLabel}>Roles</Text>
-			<View style={styles.rolesContainer}>
-				{this.state.roles.map(role => (
-					<View style={styles.roleBadge} key={role}>
-						<Text>{ this.props.roles[role] }</Text>
-					</View>
-				))}
+	renderRoles = () =>
+		this.state.roles.length > 0 && (
+			<View style={styles.item}>
+				<Text style={styles.itemLabel}>Roles</Text>
+				<View style={styles.rolesContainer}>
+					{this.state.roles.map(role => (
+						<View style={styles.roleBadge} key={role}>
+							<Text>{this.props.roles[role]}</Text>
+						</View>
+					))}
+				</View>
 			</View>
-		</View>
-	)
+		);
 
 	renderTimezone = (userId) => {
 		if (this.props.activeUsers[userId]) {
@@ -157,12 +175,17 @@ export default class RoomInfoView extends LoggedView {
 			return (
 				<View style={styles.item}>
 					<Text style={styles.itemLabel}>Timezone</Text>
-					<Text style={styles.itemContent}>{moment().utcOffset(utcOffset).format(this.props.Message_TimeFormat)} (UTC { utcOffset })</Text>
+					<Text style={styles.itemContent}>
+						{moment()
+							.utcOffset(utcOffset)
+							.format(this.props.Message_TimeFormat)}{' '}
+						(UTC {utcOffset})
+					</Text>
 				</View>
 			);
 		}
 		return null;
-	}
+	};
 
 	render() {
 		const { room, roomUser } = this.state;
@@ -170,15 +193,15 @@ export default class RoomInfoView extends LoggedView {
 		return (
 			<ScrollView style={styles.container}>
 				<View style={styles.avatarContainer}>
-					<Avatar
-						text={name}
-						size={100}
-						style={styles.avatar}
-						type={t}
-					>
-						{t === 'd' ? <Status style={[sharedStyles.status, styles.status]} id={roomUser._id} /> : null}
+					<Avatar text={name} size={100} style={styles.avatar} type={t}>
+						{t === 'd' ? (
+							<Status
+								style={[sharedStyles.status, styles.status]}
+								id={roomUser._id}
+							/>
+						) : null}
 					</Avatar>
-					<Text style={styles.roomTitle}>{ this.getRoomTitle(room) }</Text>
+					<Text style={styles.roomTitle}>{this.getRoomTitle(room)}</Text>
 				</View>
 
 				{!this.isDirect() && this.renderItem('description', room)}

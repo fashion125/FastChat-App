@@ -9,7 +9,7 @@ export default class TabBar extends React.PureComponent {
 		activeTab: PropTypes.number,
 		tabs: PropTypes.array,
 		tabEmojiStyle: PropTypes.object
-	}
+	};
 
 	render() {
 		return (
@@ -21,8 +21,14 @@ export default class TabBar extends React.PureComponent {
 						onPress={() => this.props.goToPage(i)}
 						style={styles.tab}
 					>
-						<Text style={[styles.tabEmoji, this.props.tabEmojiStyle]}>{tab}</Text>
-						{this.props.activeTab === i ? <View style={styles.activeTabLine} /> : <View style={styles.tabLine} />}
+						<Text style={[styles.tabEmoji, this.props.tabEmojiStyle]}>
+							{tab}
+						</Text>
+						{this.props.activeTab === i ? (
+							<View style={styles.activeTabLine} />
+						) : (
+							<View style={styles.tabLine} />
+						)}
 					</TouchableOpacity>
 				))}
 			</View>

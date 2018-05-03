@@ -6,7 +6,10 @@ import { readySnippetedMessages } from '../actions/snippetedMessages';
 let sub;
 let newSub;
 
-const openSnippetedMessagesRoom = function* openSnippetedMessagesRoom({ rid, limit }) {
+const openSnippetedMessagesRoom = function* openSnippetedMessagesRoom({
+	rid,
+	limit
+}) {
 	newSub = yield RocketChat.subscribe('snippetedMessages', rid, limit);
 	yield put(readySnippetedMessages());
 	if (sub) {
@@ -17,10 +20,14 @@ const openSnippetedMessagesRoom = function* openSnippetedMessagesRoom({ rid, lim
 
 const closeSnippetedMessagesRoom = function* closeSnippetedMessagesRoom() {
 	if (sub) {
-		yield sub.unsubscribe().catch(e => console.warn('closeSnippetedMessagesRoom sub', e));
+		yield sub
+			.unsubscribe()
+			.catch(e => console.warn('closeSnippetedMessagesRoom sub', e));
 	}
 	if (newSub) {
-		yield newSub.unsubscribe().catch(e => console.warn('closeSnippetedMessagesRoom newSub', e));
+		yield newSub
+			.unsubscribe()
+			.catch(e => console.warn('closeSnippetedMessagesRoom newSub', e));
 	}
 };
 

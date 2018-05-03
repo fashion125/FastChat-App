@@ -30,7 +30,9 @@ export default class EmojiPicker extends Component {
 			frequentlyUsed: [],
 			customEmojis: []
 		};
-		this.frequentlyUsed = database.objects('frequentlyUsedEmoji').sorted('count', true);
+		this.frequentlyUsed = database
+			.objects('frequentlyUsedEmoji')
+			.sorted('count', true);
 		this.customEmojis = database.objects('customEmojis');
 		this.updateFrequentlyUsed = this.updateFrequentlyUsed.bind(this);
 		this.updateCustomEmojis = this.updateCustomEmojis.bind(this);
@@ -56,7 +58,10 @@ export default class EmojiPicker extends Component {
 		if (emoji.isCustom) {
 			const count = this._getFrequentlyUsedCount(emoji.content);
 			this._addFrequentlyUsed({
-				content: emoji.content, extension: emoji.extension, count, isCustom: true
+				content: emoji.content,
+				extension: emoji.extension,
+				count,
+				isCustom: true
 			});
 			this.props.onEmojiSelected(`:${ emoji.content }:`);
 		} else {
@@ -64,7 +69,10 @@ export default class EmojiPicker extends Component {
 			const count = this._getFrequentlyUsedCount(content);
 			this._addFrequentlyUsed({ content, count, isCustom: false });
 			const shortname = `:${ emoji }:`;
-			this.props.onEmojiSelected(emojify(shortname, { output: 'unicode' }), shortname);
+			this.props.onEmojiSelected(
+				emojify(shortname, { output: 'unicode' }),
+				shortname
+			);
 		}
 	}
 
@@ -72,11 +80,11 @@ export default class EmojiPicker extends Component {
 		database.write(() => {
 			database.create('frequentlyUsedEmoji', emoji, true);
 		});
-	}
+	};
 	_getFrequentlyUsedCount = (content) => {
 		const emojiRow = this.frequentlyUsed.filtered('content == $0', content);
 		return emojiRow.length ? emojiRow[0].count + 1 : 1;
-	}
+	};
 	updateFrequentlyUsed() {
 		const frequentlyUsed = map(this.frequentlyUsed.slice(), (item) => {
 			if (item.isCustom) {
@@ -88,8 +96,11 @@ export default class EmojiPicker extends Component {
 	}
 
 	updateCustomEmojis() {
-		const customEmojis = map(this.customEmojis.slice(), item =>
-			({ content: item.name, extension: item.extension, isCustom: true }));
+		const customEmojis = map(this.customEmojis.slice(), item => ({
+			content: item.name,
+			extension: item.extension,
+			isCustom: true
+		}));
 		this.setState({ customEmojis });
 	}
 
@@ -123,17 +134,15 @@ export default class EmojiPicker extends Component {
 				renderTabBar={() => <TabBar tabEmojiStyle={this.props.tabEmojiStyle} />}
 				contentProps={scrollProps}
 			>
-				{
-					categories.tabs.map((tab, i) => (
-						<ScrollView
-							key={tab.category}
-							tabLabel={tab.tabLabel}
-							{...scrollProps}
-						>
-							{this.renderCategory(tab.category, i)}
-						</ScrollView>
-					))
-				}
+				{categories.tabs.map((tab, i) => (
+					<ScrollView
+						key={tab.category}
+						tabLabel={tab.tabLabel}
+						{...scrollProps}
+					>
+						{this.renderCategory(tab.category, i)}
+					</ScrollView>
+				))}
 			</ScrollableTabView>
 			// </View>
 		);

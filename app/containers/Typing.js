@@ -1,6 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Text, Keyboard, LayoutAnimation } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	Text,
+	Keyboard,
+	LayoutAnimation
+} from 'react-native';
 import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
@@ -28,10 +34,12 @@ export default class Typing extends React.Component {
 	}
 	onPress = () => {
 		Keyboard.dismiss();
-	}
+	};
 	get usersTyping() {
 		const users = this.props.usersTyping.filter(_username => this.props.username !== _username);
-		return users.length ? `${ users.join(' ,') } ${ users.length > 1 ? 'are' : 'is' } typing` : '';
+		return users.length
+			? `${ users.join(' ,') } ${ users.length > 1 ? 'are' : 'is' } typing`
+			: '';
 	}
 	render() {
 		const { usersTyping } = this;
@@ -40,10 +48,13 @@ export default class Typing extends React.Component {
 			return <View style={styles.emptySpace} />;
 		}
 
-		return (<Text style={styles.typing} onPress={() => this.onPress()}>{usersTyping}</Text>);
+		return (
+			<Text style={styles.typing} onPress={() => this.onPress()}>
+				{usersTyping}
+			</Text>
+		);
 	}
 }
-
 
 Typing.propTypes = {
 	username: PropTypes.string,

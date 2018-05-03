@@ -20,7 +20,9 @@ const closeRoomFiles = function* closeRoomFiles() {
 		yield sub.unsubscribe().catch(e => console.warn('closeRoomFiles sub', e));
 	}
 	if (newSub) {
-		yield newSub.unsubscribe().catch(e => console.warn('closeRoomFiles newSub', e));
+		yield newSub
+			.unsubscribe()
+			.catch(e => console.warn('closeRoomFiles newSub', e));
 	}
 };
 

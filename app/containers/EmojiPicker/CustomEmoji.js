@@ -12,7 +12,7 @@ export default class CustomEmoji extends React.Component {
 		baseUrl: PropTypes.string.isRequired,
 		emoji: PropTypes.object.isRequired,
 		style: ViewPropTypes.style
-	}
+	};
 	shouldComponentUpdate() {
 		return false;
 	}
@@ -21,7 +21,9 @@ export default class CustomEmoji extends React.Component {
 		return (
 			<CachedImage
 				style={style}
-				source={{ uri: `${ baseUrl }/emoji-custom/${ encodeURIComponent(emoji.content || emoji.name) }.${ emoji.extension }` }}
+				source={{
+					uri: `${ baseUrl }/emoji-custom/${ encodeURIComponent(emoji.content || emoji.name) }.${ emoji.extension }`
+				}}
 			/>
 		);
 	}

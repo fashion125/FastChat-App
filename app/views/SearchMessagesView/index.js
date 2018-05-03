@@ -46,10 +46,17 @@ export default class SearchMessagesView extends LoggedView {
 		if (this._cancel) {
 			this._cancel('cancel');
 		}
-		const cancel = new Promise((r, reject) => this._cancel = reject);
+		const cancel = new Promise((r, reject) => (this._cancel = reject));
 		let messages = [];
 		try {
-			const result = await Promise.race([RocketChat.messageSearch(this.searchText, this.props.navigation.state.params.rid, this.limit), cancel]);
+			const result = await Promise.race([
+				RocketChat.messageSearch(
+					this.searchText,
+					this.props.navigation.state.params.rid,
+					this.limit
+				),
+				cancel
+			]);
 			messages = result.messages.map(message => buildMessage(message));
 			this.setState({ messages, searching: false, loadingMore: false });
 		} catch (error) {
@@ -59,7 +66,7 @@ export default class SearchMessagesView extends LoggedView {
 			}
 			console.warn('search', error);
 		}
-	}
+	};
 
 	onChangeSearch = debounce((search) => {
 		this.searchText = search;
@@ -68,7 +75,7 @@ export default class SearchMessagesView extends LoggedView {
 			this.setState({ searching: true });
 		}
 		this.search();
-	}, 1000)
+	}, 1000);
 
 	moreData = () => {
 		const { loadingMore, messages } = this.state;
@@ -80,7 +87,7 @@ export default class SearchMessagesView extends LoggedView {
 			this.limit += 20;
 			this.search();
 		}
-	}
+	};
 
 	renderItem = ({ item }) => (
 		<Message
@@ -102,12 +109,12 @@ export default class SearchMessagesView extends LoggedView {
 	render() {
 		const { searching, loadingMore } = this.state;
 		return (
-			<View
-				style={styles.container}
-			>
+			<View style={styles.container}>
 				<View style={styles.searchContainer}>
 					<RCTextInput
-						inputRef={(e) => { this.name = e; }}
+						inputRef={(e) => {
+							this.name = e;
+						}}
 						label='Search'
 						onChangeText={this.onChangeSearch}
 						placeholder='Search Messages'
