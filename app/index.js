@@ -12,3 +12,5 @@ const RocketChat = () => (
 );
 
 export default RocketChat;
+
+console.disableYellowBox = true;

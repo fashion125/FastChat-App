@@ -301,6 +301,7 @@ export default class SelectedUsersView extends LoggedView {
 				buttonColor='rgba(67, 165, 71, 1)'
 				onPress={() => this.nextAction()}
 				renderIcon={() => <Icon name='md-arrow-forward' style={styles.actionButtonIcon} />}
+				testID='selected-users-view-submit'
 			/>
 		);
 	};

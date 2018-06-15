@@ -123,16 +123,14 @@ export default class RoomsListHeaderView extends React.PureComponent {
 		}
 
 		return (
-			<View
-				style={styles.left}
-				accessible
-				accessibilityLabel={`${ I18n.t('Connected_to') } ${ this.props.baseUrl }. ${ I18n.t('Tap_to_view_servers_list') }.`}
-				accessibilityTraits='button'
-				testID='rooms-list-view-sidebar'
-			>
+			<View style={styles.left}>
 				<TouchableOpacity
 					style={sharedStyles.headerButton}
 					onPress={() => this.props.navigation.openDrawer()}
+					accessible
+					accessibilityLabel={`${ I18n.t('Connected_to') } ${ this.props.baseUrl }. ${ I18n.t('Tap_to_view_servers_list') }.`}
+					accessibilityTraits='button'
+					testID='rooms-list-view-sidebar'
 				>
 					<FastImage
 						style={styles.serverImage}
@@ -194,6 +192,7 @@ export default class RoomsListHeaderView extends React.PureComponent {
 						onPress={() => this.onPressSearchButton()}
 						accessibilityLabel={I18n.t('Search')}
 						accessibilityTraits='button'
+						testID='rooms-list-view-toggle-search'
 					>
 						<Icon
 							name='md-search'
@@ -260,6 +259,7 @@ export default class RoomsListHeaderView extends React.PureComponent {
 					blurOnSubmit
 					autoCorrect={false}
 					autoCapitalize='none'
+					testID='rooms-list-view-search'
 				/>
 			</View>
 		);

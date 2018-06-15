@@ -67,10 +67,16 @@ describe('Create user screen', () => {
 		});
 
 		it('should submit empty form and raise error', async() => {
+			console.log(device.getPlatform() === 'ios')
 			await navigateToRegister();
 			await element(by.id('register-view-submit')).tap();
-			await waitFor(element(by.text('Some field is invalid or empty'))).toBeVisible().withTimeout(10000);
-			await expect(element(by.text('Some field is invalid or empty'))).toBeVisible();
+			if (device.getPlatform() === 'ios') {
+				await waitFor(element(by.text('Some field is invalid or empty'))).toBeVisible().withTimeout(10000);
+				await expect(element(by.text('Some field is invalid or empty'))).toBeVisible();
+			} else {
+				await waitFor(element(by.text('Some field is invalid or empty'))).toBeVisible().withTimeout(6000);
+				// TODO: android expect
+			}
 		});
 
 		it('should submit different passwords and raise error', async() => {
@@ -79,8 +85,13 @@ describe('Create user screen', () => {
 			await element(by.id('register-view-password')).replaceText('abc');
 			await element(by.id('register-view-repeat-password')).replaceText('xyz');
 			await element(by.id('register-view-submit')).tap();
-			await waitFor(element(by.text('Some field is invalid or empty'))).toBeVisible().withTimeout(10000);
-			await expect(element(by.text('Some field is invalid or empty'))).toBeVisible();
+			if (device.getPlatform() === 'ios') {
+				await waitFor(element(by.text('Some field is invalid or empty'))).toBeVisible().withTimeout(10000);
+				await expect(element(by.text('Some field is invalid or empty'))).toBeVisible();
+			} else {
+				await waitFor(element(by.text('Some field is invalid or empty'))).toBeVisible().withTimeout(6000);
+				// TODO: android expect
+			}
 		});
 
 		it('should submit invalid email and raise error', async() => {
@@ -89,8 +100,8 @@ describe('Create user screen', () => {
 			await element(by.id('register-view-password')).replaceText(data.password);
 			await element(by.id('register-view-repeat-password')).replaceText(data.password);
 			await element(by.id('register-view-submit')).tap();
-			await waitFor(element(by.id('register-view-error'))).toBeVisible().withTimeout(60000);
-			await expect(element(by.id('register-view-error'))).toBeVisible();
+			await waitFor(element(by.id('register-view-error'))).toExist().withTimeout(60000);
+			await expect(element(by.id('register-view-error'))).toExist();
 			await expect(element(by.id('register-view-error'))).toHaveText('Invalid email invalidemail');
 		});
 
@@ -100,8 +111,8 @@ describe('Create user screen', () => {
 			await element(by.id('register-view-password')).replaceText(data.password);
 			await element(by.id('register-view-repeat-password')).replaceText(data.password);
 			await element(by.id('register-view-submit')).tap();
-			await waitFor(element(by.id('register-view-error'))).toBeVisible().withTimeout(60000);
-			await expect(element(by.id('register-view-error'))).toBeVisible();
+			await waitFor(element(by.id('register-view-error'))).toExist().withTimeout(60000);
+			await expect(element(by.id('register-view-error'))).toExist();
 			await expect(element(by.id('register-view-error'))).toHaveText('Email already exists.');
 		});
 
@@ -117,8 +128,13 @@ describe('Create user screen', () => {
 
 		it('should submit empty username and raise error', async() => {
 			await element(by.id('register-view-submit-username')).tap();
-			await waitFor(element(by.text('Username is empty'))).toBeVisible().withTimeout(10000);
-			await expect(element(by.text('Username is empty'))).toBeVisible();
+			if (device.getPlatform() === 'ios') {
+				await waitFor(element(by.text('Username is empty'))).toBeVisible().withTimeout(10000);
+				await expect(element(by.text('Username is empty'))).toBeVisible();
+			} else {
+				await waitFor(element(by.text('Username is empty'))).toBeVisible().withTimeout(6000);
+				// TODO: android expect
+			}
 		});
 
 		it('should submit already taken username and raise error', async() => {

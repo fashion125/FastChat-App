@@ -4,11 +4,21 @@ const {
 const { takeScreenshot } = require('./helpers/screenshot');
 const data = require('./data');
 
+const scrollDown = 500;
+
+async function navigateToSelectUsers(params) {
+	await element(by.id('rooms-list-view-create-channel')).tap();
+	if (device.getPlatform() === 'android') {
+		await waitFor(element(by.id('rooms-list-view-create-channel-action-button'))).toBeVisible().withTimeout(2000);
+		await element(by.id('rooms-list-view-create-channel-action-button')).tap();
+	}
+	await waitFor(element(by.id('select-users-view'))).toBeVisible().withTimeout(2000);
+}
+
 describe('Create room screen', () => {
 	before(async() => {
 		await device.reloadReactNative(); // TODO: remove this after fix logout subscription
-		await element(by.id('rooms-list-view-create-channel')).tap();
-		await waitFor(element(by.id('select-users-view'))).toBeVisible().withTimeout(2000);
+		await navigateToSelectUsers();
 	});
 
 	describe('Render', async() => {
@@ -30,11 +40,10 @@ describe('Create room screen', () => {
 			await element(by.id('header-back')).tap();
 			await waitFor(element(by.id('rooms-list-view'))).toBeVisible().withTimeout(2000);
 			await expect(element(by.id('rooms-list-view'))).toBeVisible();
-			await element(by.id('rooms-list-view-create-channel')).tap();
-			await waitFor(element(by.id('select-users-view'))).toBeVisible().withTimeout(2000);
 		});
 
 		it('should search users', async() => {
+			await navigateToSelectUsers();
 			await element(by.id('select-users-view-search')).replaceText('rocket.cat');
 			await waitFor(element(by.id(`select-users-view-item-rocket.cat`))).toBeVisible().withTimeout(10000);
 			await expect(element(by.id(`select-users-view-item-rocket.cat`))).toBeVisible();
@@ -66,6 +75,7 @@ describe('Create room screen', () => {
 
 		it('should get invalid room', async() => {
 			await element(by.id('create-channel-name')).replaceText('general');
+			await waitFor(element(by.id('create-channel-submit'))).toBeVisible().whileElement(by.id('create-channel-view-list')).scroll(scrollDown, 'down');
 			await element(by.id('create-channel-submit')).tap();
 			await waitFor(element(by.id('create-channel-error'))).toBeVisible().withTimeout(60000);
 			await expect(element(by.id('create-channel-error'))).toBeVisible();
@@ -74,6 +84,7 @@ describe('Create room screen', () => {
 		it('should create public room', async() => {
 			await element(by.id('create-channel-name')).replaceText(`public${ data.random }`);
 			await element(by.id('create-channel-type')).tap();
+			await waitFor(element(by.id('create-channel-submit'))).toBeVisible().whileElement(by.id('create-channel-view-list')).scroll(scrollDown, 'down');
 			await element(by.id('create-channel-submit')).tap();
 			await waitFor(element(by.id('room-view'))).toBeVisible().withTimeout(60000);
 			await expect(element(by.id('room-view'))).toBeVisible();
@@ -86,13 +97,13 @@ describe('Create room screen', () => {
 		});
 
 		it('should create private room', async() => {
-			await element(by.id('rooms-list-view-create-channel')).tap();
-			await waitFor(element(by.id('select-users-view'))).toBeVisible().withTimeout(2000);
+			await navigateToSelectUsers();
 			await element(by.id('select-users-view-item-rocket.cat')).tap();
 			await waitFor(element(by.id('selected-user-rocket.cat'))).toBeVisible().withTimeout(5000);
 			await element(by.id('selected-users-view-submit')).tap();
 			await waitFor(element(by.id('create-channel-view'))).toBeVisible().withTimeout(5000);
 			await element(by.id('create-channel-name')).replaceText(`private${ data.random }`);
+			await waitFor(element(by.id('create-channel-submit'))).toBeVisible().whileElement(by.id('create-channel-view-list')).scroll(scrollDown, 'down');
 			await element(by.id('create-channel-submit')).tap();
 			await waitFor(element(by.id('room-view'))).toBeVisible().withTimeout(60000);
 			await expect(element(by.id('room-view'))).toBeVisible();

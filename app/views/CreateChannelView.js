@@ -137,7 +137,7 @@ export default class CreateChannelView extends LoggedView {
 				contentContainerStyle={styles.container}
 				keyboardVerticalOffset={128}
 			>
-				<ScrollView {...scrollPersistTaps} contentContainerStyle={styles.containerScrollView}>
+				<ScrollView {...scrollPersistTaps} contentContainerStyle={styles.containerScrollView} testID='create-channel-view-list'>
 					<SafeAreaView testID='create-channel-view'>
 						<RCTextInput
 							label={I18n.t('Channel_Name')}

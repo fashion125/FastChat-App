@@ -9,6 +9,7 @@ async function mockMessage(message) {
 	await element(by.id('messagebox-input')).typeText(`${ data.random }${ message }`);
 	await element(by.id('messagebox-send-message')).tap();
 	await waitFor(element(by.text(`${ data.random }${ message }`))).toBeVisible().withTimeout(60000);
+	await new Promise(resolve => setTimeout(() => { console.log('resolve'); resolve() }, 3000));
 };
 
 async function navigateToRoom() {
@@ -17,7 +18,7 @@ async function navigateToRoom() {
     await waitFor(element(by.id('room-view'))).toBeVisible().withTimeout(5000);
 }
 
-describe('Room screen', () => {
+describe.only('Room screen', () => {
 	before(async() => {
 		await navigateToRoom();
 	});
@@ -156,10 +157,16 @@ describe('Room screen', () => {
 				await element(by.id('messagebox-input')).typeText(`@${ data.user }`);
 				await waitFor(element(by.id('messagebox-container'))).toBeVisible().withTimeout(60000);
 				await expect(element(by.id('messagebox-container'))).toBeVisible();
+				await waitFor(element(by.id(`mention-item-${ data.user }`))).toBeVisible().withTimeout(60000);
+				await expect(element(by.id(`mention-item-${ data.user }`))).toBeVisible();
 				await element(by.id(`mention-item-${ data.user }`)).tap();
 				await expect(element(by.id('messagebox-input'))).toHaveText(`@${ data.user } `);
-				await element(by.id('messagebox-input')).tap();
-				await element(by.id('messagebox-input')).typeText('test');
+				if (device.getPlatform() === 'ios') {
+					await element(by.id('messagebox-input')).tap();
+					await element(by.id('messagebox-input')).typeText('test');
+				} else {
+					await element(by.id('messagebox-input')).replaceText(`@${ data.user } test`);
+				}
 				await element(by.id('messagebox-send-message')).tap();
 				await waitFor(element(by.text(`@${ data.user } test`))).toBeVisible().withTimeout(60000);
 			});
@@ -175,7 +182,7 @@ describe('Room screen', () => {
 			});
 		});
 
-		describe('Message', async() => {
+		describe.only('Message', async() => {
 			it('should show message actions', async() => {
 				await element(by.text(`${ data.random }message`)).longPress();
 				await waitFor(element(by.text('Message actions'))).toBeVisible().withTimeout(5000);
@@ -189,8 +196,13 @@ describe('Room screen', () => {
 				await waitFor(element(by.text('Message actions'))).toBeVisible().withTimeout(5000);
 				await expect(element(by.text('Message actions'))).toBeVisible();
 				await element(by.text('Copy Permalink')).tap();
-				await expect(element(by.text('Permalink copied to clipboard!'))).toBeVisible();
-				await waitFor(element(by.text('Permalink copied to clipboard!'))).toBeNotVisible().withTimeout(5000);
+				if (device.getPlatform() === 'ios') {
+					await expect(element(by.text('Permalink copied to clipboard!'))).toBeVisible();
+					await waitFor(element(by.text('Permalink copied to clipboard!'))).toBeNotVisible().withTimeout(5000);
+				} else {
+					await waitFor(element(by.text('Permalink copied to clipboard!'))).toBeVisible().withTimeout(6000);
+					// TODO: android expect
+				}
 				
 				// TODO: test clipboard
 			});
@@ -200,8 +212,13 @@ describe('Room screen', () => {
 				await waitFor(element(by.text('Message actions'))).toBeVisible().withTimeout(5000);
 				await expect(element(by.text('Message actions'))).toBeVisible();
 				await element(by.text('Copy Message')).tap();
-				await expect(element(by.text('Copied to clipboard!'))).toBeVisible();
-				await waitFor(element(by.text('Copied to clipboard!'))).toBeNotVisible().withTimeout(5000);
+				if (device.getPlatform() === 'ios') {
+					await expect(element(by.text('Copied to clipboard!'))).toBeVisible();
+					await waitFor(element(by.text('Copied to clipboard!'))).toBeNotVisible().withTimeout(5000);
+				} else {
+					await waitFor(element(by.text('Copied to clipboard!'))).toBeVisible().withTimeout(6000);
+					// TODO: android expect
+				}
 				// TODO: test clipboard
 			});
 
@@ -219,36 +236,45 @@ describe('Room screen', () => {
 			});
 
 			it('should react to message', async() => {
-				await element(by.text(`${ data.random }message`)).longPress();
-				await waitFor(element(by.text('Message actions'))).toBeVisible().withTimeout(5000);
-				await expect(element(by.text('Message actions'))).toBeVisible();
-				await element(by.text('Add Reaction')).tap();
-				await waitFor(element(by.id('reaction-picker'))).toBeVisible().withTimeout(2000);
-				await expect(element(by.id('reaction-picker'))).toBeVisible();
-				await element(by.id('reaction-picker-😃')).tap();
-				await waitFor(element(by.id('reaction-picker-grinning'))).toBeVisible().withTimeout(2000);
-				await expect(element(by.id('reaction-picker-grinning'))).toBeVisible();
-				await element(by.id('reaction-picker-grinning')).tap();
-				await waitFor(element(by.id('message-reaction-:grinning:'))).toBeVisible().withTimeout(60000);
-				await expect(element(by.id('message-reaction-:grinning:'))).toBeVisible();
+				// it's not possible to scroll android's actionsheet for now
+				if (device.getPlatform() === 'ios') {
+					await element(by.text(`${ data.random }message`)).longPress();
+					await waitFor(element(by.text('Message actions'))).toBeVisible().withTimeout(5000);
+					await expect(element(by.text('Message actions'))).toBeVisible();
+					await element(by.text('Add Reaction')).tap();
+					await waitFor(element(by.id('reaction-picker'))).toBeVisible().withTimeout(2000);
+					await expect(element(by.id('reaction-picker'))).toBeVisible();
+					await element(by.id('reaction-picker-😃')).tap();
+					await waitFor(element(by.id('reaction-picker-grinning'))).toBeVisible().withTimeout(2000);
+					await expect(element(by.id('reaction-picker-grinning'))).toBeVisible();
+					await element(by.id('reaction-picker-grinning')).tap();
+					await waitFor(element(by.id('message-reaction-:grinning:'))).toBeVisible().withTimeout(60000);
+					await expect(element(by.id('message-reaction-:grinning:'))).toBeVisible();
+				}
 			});
 
 			it('should show reaction picker on add reaction button pressed and have frequently used emoji', async() => {
-				await element(by.id('message-add-reaction')).tap();
-				await waitFor(element(by.id('reaction-picker'))).toBeVisible().withTimeout(2000);
-				await expect(element(by.id('reaction-picker'))).toBeVisible();
-				await waitFor(element(by.id('reaction-picker-grinning'))).toBeVisible().withTimeout(2000);
-				await expect(element(by.id('reaction-picker-grinning'))).toBeVisible();
-				await element(by.id('reaction-picker-😃')).tap();
-				await waitFor(element(by.id('reaction-picker-grimacing'))).toBeVisible().withTimeout(2000);
-				await element(by.id('reaction-picker-grimacing')).tap();
-				await waitFor(element(by.id('message-reaction-:grimacing:'))).toBeVisible().withTimeout(60000);
+				// it's not possible to scroll android's actionsheet for now
+				if (device.getPlatform() === 'ios') {
+					await element(by.id('message-add-reaction')).tap();
+					await waitFor(element(by.id('reaction-picker'))).toBeVisible().withTimeout(2000);
+					await expect(element(by.id('reaction-picker'))).toBeVisible();
+					await waitFor(element(by.id('reaction-picker-grinning'))).toBeVisible().withTimeout(2000);
+					await expect(element(by.id('reaction-picker-grinning'))).toBeVisible();
+					await element(by.id('reaction-picker-😃')).tap();
+					await waitFor(element(by.id('reaction-picker-grimacing'))).toBeVisible().withTimeout(2000);
+					await element(by.id('reaction-picker-grimacing')).tap();
+					await waitFor(element(by.id('message-reaction-:grimacing:'))).toBeVisible().withTimeout(60000);
+				}
 			});
 
 			it('should remove reaction', async() => {
-				await element(by.id('message-reaction-:grinning:')).tap();
-				await waitFor(element(by.id('message-reaction-:grinning:'))).toBeNotVisible().withTimeout(60000);
-				await expect(element(by.id('message-reaction-:grinning:'))).toBeNotVisible();
+				// it's not possible to scroll android's actionsheet for now
+				if (device.getPlatform() === 'ios') {
+					await element(by.id('message-reaction-:grinning:')).tap();
+					await waitFor(element(by.id('message-reaction-:grinning:'))).toBeNotVisible().withTimeout(60000);
+					await expect(element(by.id('message-reaction-:grinning:'))).toBeNotVisible();
+				}
 			});
 
 			it('should reply message', async() => {
@@ -257,35 +283,51 @@ describe('Room screen', () => {
 				await waitFor(element(by.text('Message actions'))).toBeVisible().withTimeout(5000);
 				await expect(element(by.text('Message actions'))).toBeVisible();
 				await element(by.text('Reply')).tap();
-				await element(by.id('messagebox-input')).typeText('replied');
+				await waitFor(element(by.text('Message actions'))).toBeNotVisible().withTimeout(5000);
+				if (device.getPlatform() === 'ios') {
+					await element(by.id('messagebox-input')).typeText('replied');
+				} else {
+					await element(by.id('messagebox-input')).replaceText(`${ data.random }replied`);
+				}
 				await element(by.id('messagebox-send-message')).tap();
 				// TODO: test if reply was sent
 			});
 
-			it('should edit message', async() => {
-				await mockMessage('edit');
+			it.only('should edit message', async() => {
+				// await mockMessage('edit');
 				await element(by.text(`${ data.random }edit`)).longPress();
 				await waitFor(element(by.text('Message actions'))).toBeVisible().withTimeout(5000);
 				await expect(element(by.text('Message actions'))).toBeVisible();
+				await new Promise(resolve => setTimeout(() => { console.log('resolve'); resolve() }, 3000));
 				await element(by.text('Edit')).tap();
-				await element(by.id('messagebox-input')).typeText('ed');
-				await element(by.id('messagebox-send-message')).tap();
-				await waitFor(element(by.text(`${ data.random }edited`))).toBeVisible().withTimeout(60000);
-				await expect(element(by.text(`${ data.random }edited`))).toBeVisible();
+				await waitFor(element(by.text('Message actions'))).toBeNotVisible().withTimeout(5000);
+				// if (device.getPlatform() === 'ios') {
+				// 	await element(by.id('messagebox-input')).typeText('ed');
+				// } else {
+				// 	await element(by.id('messagebox-input')).replaceText(`${ data.random }edited`);
+				// }
+				// await element(by.id('messagebox-send-message')).tap();
+				// await waitFor(element(by.text(`${ data.random }edited`))).toBeVisible().withTimeout(60000);
+				// await expect(element(by.text(`${ data.random }edited`))).toBeVisible();
 			});
 
-			it('should quote message', async() => {
+			it.only('should quote message', async() => {
 				await mockMessage('quote');
 				await element(by.text(`${ data.random }quote`)).longPress();
 				await waitFor(element(by.text('Message actions'))).toBeVisible().withTimeout(5000);
 				await expect(element(by.text('Message actions'))).toBeVisible();
 				await element(by.text('Quote')).tap();
-				await element(by.id('messagebox-input')).typeText(`${ data.random }quoted`);
+				await waitFor(element(by.text('Message actions'))).toBeNotVisible().withTimeout(5000);
+				if (device.getPlatform() === 'ios') {
+					await element(by.id('messagebox-input')).typeText('quoted');
+				} else {
+					await element(by.id('messagebox-input')).replaceText(`${ data.random }quoted`);
+				}
 				await element(by.id('messagebox-send-message')).tap();
 				// TODO: test if quote was sent
 			});
 
-			it('should pin message', async() => {
+			it.only('should pin message', async() => {
 				await element(by.text(`${ data.random }edited`)).longPress();
 				await waitFor(element(by.text('Message actions'))).toBeVisible().withTimeout(5000);
 				await expect(element(by.text('Message actions'))).toBeVisible();

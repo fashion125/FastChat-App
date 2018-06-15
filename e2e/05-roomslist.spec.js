@@ -39,7 +39,9 @@ describe('Rooms list screen', () => {
 	
 			it('should have sidebar button', async() => {
 				await expect(element(by.id('rooms-list-view-sidebar'))).toBeVisible();
-				await expect(element(by.id('rooms-list-view-sidebar'))).toHaveLabel(`Connected to ${ data.server }. Tap to view servers list.`);
+				if (device.getPlatform() === 'ios') {
+					await expect(element(by.id('rooms-list-view-sidebar'))).toHaveLabel(`Connected to ${ data.server }. Tap to view servers list.`);
+				}
 			});
 		});
 
@@ -63,7 +65,11 @@ describe('Rooms list screen', () => {
 		});
 
 		it('should search room and navigate', async() => {
-			await element(by.id('rooms-list-view-list')).swipe('down');
+			if (device.getPlatform() === 'android') {
+				await element(by.id('rooms-list-view-toggle-search')).tap();
+			} else {
+				await element(by.id('rooms-list-view-list')).swipe('down');
+			}
 			await waitFor(element(by.id('rooms-list-view-search'))).toBeVisible().withTimeout(2000);
 			await expect(element(by.id('rooms-list-view-search'))).toBeVisible();
 			await element(by.id('rooms-list-view-search')).replaceText('rocket.cat');

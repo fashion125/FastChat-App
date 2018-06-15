@@ -213,8 +213,13 @@ export default class RoomsListView extends LoggedView {
 	)
 
 	renderCreateButtons = () => (
-		<ActionButton buttonColor='rgba(231,76,60,1)'>
-			<ActionButton.Item buttonColor='#9b59b6' title={I18n.t('Create_Channel')} onPress={() => { this.createChannel(); }} >
+		<ActionButton buttonColor='rgba(231,76,60,1)' testID='rooms-list-view-create-channel'>
+			<ActionButton.Item
+				buttonColor='#9b59b6'
+				title={I18n.t('Create_Channel')}
+				onPress={() => { this.createChannel(); }}
+				testID='rooms-list-view-create-channel-action-button'
+			>
 				<Icon name='md-chatbubbles' style={styles.actionButtonIcon} />
 			</ActionButton.Item>
 		</ActionButton>
