@@ -14,8 +14,8 @@ import throttle from '../../utils/throttle';
 
 const DEFAULT_SCROLL_CALLBACK_THROTTLE = 100;
 
-export class DataSource extends OldList.DataSource {
-	getRowData(sectionIndex: number, rowIndex: number): any {
+class DataSource extends OldList.DataSource {
+	getRowData(sectionIndex, rowIndex) {
 		const sectionID = this.sectionIdentities[sectionIndex];
 		const rowID = this.rowIdentities[sectionIndex][rowIndex];
 		return this._getRowData(this._dataBlob, sectionID, rowID);
@@ -27,7 +27,10 @@ export class DataSource extends OldList.DataSource {
 
 const ds = new DataSource({ rowHasChanged: (r1, r2) => r1._id !== r2._id || r1._updatedAt.toISOString() !== r2._updatedAt.toISOString() });
 
-export class List extends React.Component {
+const forwardRef = React.forwardRef((props, ref) => <List {...props} forwardedRef={ref} />);
+export default forwardRef;
+
+class List extends React.Component {
 	static propTypes = {
 		onEndReached: PropTypes.func,
 		renderFooter: PropTypes.func,
@@ -37,6 +40,8 @@ export class List extends React.Component {
 	};
 	constructor(props) {
 		super(props);
+		// console.warn(this.props);
+
 		this.data = database
 			.objects('messages')
 			.filtered('rid = $0', props.room)
@@ -62,8 +67,11 @@ export class List extends React.Component {
 	}, 1000);
 
 	render() {
+		// console.warn(this.props.forwardRef.current)
+
 		return (
 			<ListView
+				forwardedRef={this.props.forwardedRef}
 				enableEmptySections
 				style={styles.list}
 				data={this.data}
@@ -86,13 +94,14 @@ export class List extends React.Component {
 @connect(state => ({
 	lastOpen: state.room.lastOpen
 }))
-export class ListView extends OldList2 {
+class ListView extends OldList2 {
 	constructor(props) {
 		super(props);
 		this.state = {
 			curRenderedRowsCount: 10
 			// highlightedRow: ({}: Object)
 		};
+		// console.warn(this.props);
 	}
 
 	getInnerViewNode() {
@@ -177,9 +186,17 @@ export class ListView extends OldList2 {
 				<ImageBackground key='listview-background' source={image} style={styles.imageBackground} />,
 				<ScrollView
 					key='listview-scroll'
-					ref={this._setScrollComponentRef}
+					ref={this.props.forwardedRef}
 					onContentSizeChange={this._onContentSizeChange}
 					onLayout={this._onLayout}
+					onMomentumScrollEnd={(event) => {
+						this.props.forwardedRef.test = event.nativeEvent.contentOffset.y
+						console.log('onMomentumScrollEnd', event.nativeEvent.contentOffset.y)
+					}}
+					onScrollEndDrag={(event) => {
+						this.yOffset = event.nativeEvent.contentOffset.y
+						console.log('onScrollEndDrag', event.nativeEvent.contentOffset.y)
+					}}
 					{...props}
 				>
 					{header}

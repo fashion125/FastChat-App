@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, LayoutAnimation, ActivityIndicator, SafeAreaView } from 'react-native';
+import { Text, View, LayoutAnimation, ActivityIndicator, SafeAreaView, Image } from 'react-native';
 import { connect } from 'react-redux';
 import equal from 'deep-equal';
 
 import LoggedView from '../View';
-import { List } from './ListView';
+import List from './ListView';
 import { openRoom, closeRoom, setLastOpen } from '../../actions/room';
 import { toggleReactionPicker, actionsShow } from '../../actions/messages';
 import database from '../../lib/realm';
@@ -18,6 +18,7 @@ import ReactionPicker from './ReactionPicker';
 import UploadProgress from './UploadProgress';
 import styles from './styles';
 import log from '../../utils/log';
+import Touch from '../../utils/touch';
 import I18n from '../../i18n';
 import debounce from '../../utils/debounce';
 import { iconsMap } from '../../Icons';
@@ -70,6 +71,8 @@ export default class RoomView extends LoggedView {
 		};
 		this.onReactionPress = this.onReactionPress.bind(this);
 		props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+
+		this.childRef = React.createRef();
 	}
 
 	componentWillMount() {
@@ -228,6 +231,13 @@ export default class RoomView extends LoggedView {
 		return false;
 	}
 
+	scrollToEnd = () => {
+		// console.warn(this.childRef.current.test)
+		if (this.childRef && this.childRef.current && this.childRef.current.scrollTo) {
+			this.childRef.current.scrollTo({ x: 0, y: -50, animated: true });
+		}
+	}
+
 	renderItem = (item, previousItem) => (
 		<Message
 			key={item._id}
@@ -278,13 +288,23 @@ export default class RoomView extends LoggedView {
 		return null;
 	}
 
+	renderFloatingButton = () => {
+		return (
+			<Touch onPress={this.scrollToEnd}>
+				<Image source={{ uri: 'float_button' }} style={{ width: 42, height: 42, position: 'absolute', right: 20, bottom: 77 }} />
+			</Touch>
+		);
+	}
+
 	renderList = () => {
 		if (!this.state.loaded) {
 			return <ActivityIndicator style={styles.loading} />;
 		}
+
 		return (
 			[
 				<List
+					ref={this.childRef}
 					key='room-view-messages'
 					end={this.state.end}
 					room={this.rid}
@@ -292,6 +312,7 @@ export default class RoomView extends LoggedView {
 					onEndReached={this.onEndReached}
 					renderRow={this.renderItem}
 				/>,
+				this.renderFloatingButton(),
 				this.renderFooter()
 			]
 		);
