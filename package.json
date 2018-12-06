@@ -70,7 +70,7 @@
     "redux-immutable-state-invariant": "^2.1.0",
     "redux-saga": "^0.16.2",
     "rn-fetch-blob": "^0.10.13",
-    "snyk": "^1.109.0",
+    "snyk": "^1.116.2",
     "strip-ansi": "^4.0.0"
   },
   "devDependencies": {
