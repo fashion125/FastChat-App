@@ -26,7 +26,7 @@
     "@rocket.chat/sdk": "git+https://github.com/RocketChat/Rocket.Chat.js.SDK.git#temp-ddp",
     "deep-equal": "^1.0.1",
     "ejson": "^2.1.2",
-    "js-base64": "^2.4.9",
+    "js-base64": "^2.5.0",
     "js-sha256": "^0.9.0",
     "jsc-android": "^236355.1.0",
     "lodash": "^4.17.11",
