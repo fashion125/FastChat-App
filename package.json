@@ -103,7 +103,7 @@
     "otp.js": "^1.1.0",
     "react-dom": "16.6.1",
     "react-test-renderer": "16.6.1",
-    "reactotron-react-native": "^2.1.0",
+    "reactotron-react-native": "^2.1.4",
     "reactotron-redux": "^2.1.0",
     "reactotron-redux-saga": "^2.1.0",
     "schedule": "^0.4.0"
