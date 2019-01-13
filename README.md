@@ -1,4 +1,4 @@
-# Rocket.Chat React Native Mobile
+# FastChat React Native Mobile
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/RocketChat/Rocket.Chat.ReactNative.svg)](https://greenkeeper.io/)
 
